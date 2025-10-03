@@ -3,112 +3,137 @@
 #include <string.h>
 #include <ctype.h>
 
-#define MAX 100
+#define MAX_STACK_SIZE 100
 
-int values[MAX];
-char ops[MAX];
-int valTop = -1, opTop = -1;
+int operandStack[MAX_STACK_SIZE];
+char operatorStack[MAX_STACK_SIZE];
+int operandTop = -1, operatorTop = -1;
 
-void pushVal(int x) { 
-    values[++valTop] = x; 
+void pushOperand(int value) { 
+    operandStack[++operandTop] = value; 
 }
 
-int popVal() {
-    return values[valTop--]; 
+int popOperand() { 
+    return operandStack[operandTop--]; 
 }
 
-void pushOp(char x) { 
-    ops[++opTop] = x; 
+void pushOperator(char op) { 
+    operatorStack[++operatorTop] = op; 
 }
 
-char popOp() {
-    return ops[opTop--]; 
+char popOperator() { 
+    return operatorStack[operatorTop--]; 
 }
 
-int precedence(char op) { 
+int getPrecedence(char operatorSymbol) { 
     int value = 0;
-    if (op == '+' || op == '-') value = 1;
-    else if (op == '*' || op == '/') value = 2;
+    if (operatorSymbol == '+' || operatorSymbol == '-'){ 
+        value = 1;
+    }
+    else if (operatorSymbol == '*' || operatorSymbol == '/'){ 
+        value = 2;
+    }
     return value;
 }
 
-int applyOp(int a, int b, char op, int *errorFlag) {  
+int performOperation(int leftOperand, int rightOperand, char operatorSymbol, int *errorFlag) {  
     int result = 0;
-    switch (op) {
-        case '+': result = a + b; break;
-        case '-': result = a - b; break;
-        case '*': result = a * b; break;
-        case '/':
-            if (b == 0) {
+    switch (operatorSymbol) {
+        case '+': {
+            result = leftOperand + rightOperand; 
+            break;
+        }
+        case '-': {
+            result = leftOperand - rightOperand; 
+            break;
+        }
+        case '*': {
+            result = leftOperand * rightOperand; 
+            break;
+        }
+        case '/': {
+            if (rightOperand == 0) {
                 *errorFlag = 1;
                 return 0;
             }
-            result =  a / b;
+            result = leftOperand / rightOperand;
             break;
+        }
     }
     return result;
 }
 
-int evaluateExpression(const char *expr, int *errorFlag) {
+int evaluateExpression(const char *expression, int *errorFlag) {
     int index;
-    int expressionLength = strlen(expr);
-    for (index = 0; index < expressionLength; index++) {
-        if (expr[index] == ' ') continue;
+    int expressionLength = strlen(expression);
+    int finalResult = 0;
 
-        if (isdigit(expr[index])) { 
-            int val = 0;
-            while (index < expressionLength && isdigit(expr[index])) {
-                val = (val * 10) + (expr[index] - '0');
+    for (index = 0; index < expressionLength; index++) {
+        if (expression[index] == ' ') continue;
+
+        if (isdigit(expression[index])) { 
+            int value = 0;
+            while (index < expressionLength && isdigit(expression[index])) {
+                value = (value * 10) + (expression[index] - '0');
                 index++;
             }
-            pushVal(val);
+            pushOperand(value);
             index--;
         }
-        else if (expr[index] == '+' || expr[index] == '-' ||
-                 expr[index] == '*' || expr[index] == '/') {  
-            while (opTop != -1 && precedence(ops[opTop]) >= precedence(expr[index])) {
-                int val2 = popVal();
-                int val1 = popVal();
-                char op = popOp();
-                int result = applyOp(val1, val2, op, errorFlag);
-                if (*errorFlag) return 0;
-                pushVal(result);
+        else if (expression[index] == '+' || expression[index] == '-' ||
+                 expression[index] == '*' || expression[index] == '/') {  
+            while (operatorTop != -1 && 
+                   getPrecedence(operatorStack[operatorTop]) >= getPrecedence(expression[index])) {
+                int rightOperand = popOperand();
+                int leftOperand = popOperand();
+                char operatorSymbol = popOperator();
+                int result = performOperation(leftOperand, rightOperand, operatorSymbol, errorFlag);
+                if (*errorFlag) break;
+                pushOperand(result);
             }
-            pushOp(expr[index]);
+            if (*errorFlag) break;
+            pushOperator(expression[index]);
         }
         else {
-            *errorFlag = 2; 
-            return 0;
+            *errorFlag = 2;
+            break;
         }
     }
 
-    while (opTop != -1) {   
-        int val2 = popVal();
-        int val1 = popVal();
-        char op = popOp();
-        int result = applyOp(val1, val2, op, errorFlag);
-        if (*errorFlag) return 0;
-        pushVal(result);
+    if (*errorFlag == 0) {
+        while (operatorTop != -1) {   
+            int rightOperand = popOperand();
+            int leftOperand = popOperand();
+            char operatorSymbol = popOperator();
+            int result = performOperation(leftOperand, rightOperand, operatorSymbol, errorFlag);
+            if (*errorFlag) break;
+            pushOperand(result);
+        }
     }
 
-    return popVal();
+    if (*errorFlag == 0) {
+        finalResult = popOperand();
+    }
+
+    return finalResult;
 }
 
+
 int main() {
-    char expr[200];
+    char expression[200];
     printf("Enter expression: ");
-    fgets(expr, sizeof(expr), stdin);
-    expr[strcspn(expr, "\n")] = '\0';
+    fgets(expression, sizeof(expression), stdin);
+    expression[strcspn(expression, "\n")] = '\0';
 
     int errorFlag = 0;
-    int result = evaluateExpression(expr, &errorFlag);
+    int result = evaluateExpression(expression, &errorFlag);
 
     if (errorFlag == 1) {
         printf("Error: Division by zero.\n");
     } else if (errorFlag == 2) {
         printf("Error: Invalid expression.\n");
     } else {
-        printf("%d\n", result);
+        printf("Result: %d\n", result);
     }
 
     return 0;
