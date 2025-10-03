@@ -1,5 +1,4 @@
 #include <stdio.h>
-#include <conio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <ctype.h>
@@ -10,66 +9,64 @@ int values[MAX];
 char ops[MAX];
 int valTop = -1, opTop = -1;
 
-//so actually i am using here some stack logic in which opTop is the pointer to stack of 
-//operations stack of operations generally contains all the operations and valTop is the 
-//pointer to the top of values and it contains values in which to perform so as the operation
-//comes we will check if any operations is there whose priority is more than first we perform 
-//them and save the result again in the stack of values as this we go further
-
-void pushVal(int x) {   //to push the value in values array
+void pushVal(int x) { 
     values[++valTop] = x; 
 }
 
-int popVal() { //to pop the value in values array
+int popVal() {
     return values[valTop--]; 
 }
 
-void pushOp(char x) { //to push the operations in ops array
+void pushOp(char x) { 
     ops[++opTop] = x; 
 }
 
-char popOp() { //to pop the operation in ops array
+char popOp() {
     return ops[opTop--]; 
 }
 
-int precedence(char op) {  //selecting priority
-    if (op == '+' || op == '-') return 1;
-    if (op == '*' || op == '/') return 2;
-    return 0;
+int precedence(char op) { 
+    int value = 0;
+    if (op == '+' || op == '-') value = 1;
+    else if (op == '*' || op == '/') value = 2;
+    return value;
 }
 
-int applyOp(int a, int b, char op, int *errorFlag) {  //to apply operation btwn two numbers
+int applyOp(int a, int b, char op, int *errorFlag) {  
+    int result = 0;
     switch (op) {
-        case '+': return a + b;
-        case '-': return a - b;
-        case '*': return a * b;
+        case '+': result = a + b; break;
+        case '-': result = a - b; break;
+        case '*': result = a * b; break;
         case '/':
             if (b == 0) {
-                *errorFlag = 1; // Division by zero
+                *errorFlag = 1;
                 return 0;
             }
-            return a / b; // Integer division
+            result =  a / b;
+            break;
     }
-    return 0;
+    return result;
 }
 
 int evaluateExpression(const char *expr, int *errorFlag) {
-    int i;
-    for (i = 0; i < strlen(expr); i++) {
-        if (expr[i] == ' ') continue;
+    int index;
+    int expressionLength = strlen(expr);
+    for (index = 0; index < expressionLength; index++) {
+        if (expr[index] == ' ') continue;
 
-        if (isdigit(expr[i])) {  //if digit store complete digit in stack
+        if (isdigit(expr[index])) { 
             int val = 0;
-            while (i < strlen(expr) && isdigit(expr[i])) {
-                val = (val * 10) + (expr[i] - '0');
-                i++;
+            while (index < expressionLength && isdigit(expr[index])) {
+                val = (val * 10) + (expr[index] - '0');
+                index++;
             }
             pushVal(val);
-            i--;
+            index--;
         }
-        else if (expr[i] == '+' || expr[i] == '-' ||
-                 expr[i] == '*' || expr[i] == '/') {  //if more priority exist then first complete opr then push
-            while (opTop != -1 && precedence(ops[opTop]) >= precedence(expr[i])) {
+        else if (expr[index] == '+' || expr[index] == '-' ||
+                 expr[index] == '*' || expr[index] == '/') {  
+            while (opTop != -1 && precedence(ops[opTop]) >= precedence(expr[index])) {
                 int val2 = popVal();
                 int val1 = popVal();
                 char op = popOp();
@@ -77,15 +74,15 @@ int evaluateExpression(const char *expr, int *errorFlag) {
                 if (*errorFlag) return 0;
                 pushVal(result);
             }
-            pushOp(expr[i]);
+            pushOp(expr[index]);
         }
         else {
-            *errorFlag = 2; // Invalid character
+            *errorFlag = 2; 
             return 0;
         }
     }
 
-    while (opTop != -1) {   //do with remaining
+    while (opTop != -1) {   
         int val2 = popVal();
         int val1 = popVal();
         char op = popOp();
@@ -101,7 +98,7 @@ int main() {
     char expr[200];
     printf("Enter expression: ");
     fgets(expr, sizeof(expr), stdin);
-    expr[strcspn(expr, "\n")] = '\0'; // Remove newline
+    expr[strcspn(expr, "\n")] = '\0';
 
     int errorFlag = 0;
     int result = evaluateExpression(expr, &errorFlag);
