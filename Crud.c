@@ -22,7 +22,7 @@ void createUser() {
     printf("Enter ID: ");
     scanf("%d", &u.id);
     printf("Enter Name: ");
-    scanf("%s", u.name);
+    scanf("%s", &u.name);
     printf("Enter Age: ");
     scanf("%d", &u.age);
 
@@ -31,7 +31,6 @@ void createUser() {
     printf("User added successfully!\n");
 }
 
-// Function to display all users
 void readUsers() {
     FILE *fp = fopen(FILENAME, "r");
     if (!fp) {
@@ -47,7 +46,6 @@ void readUsers() {
     fclose(fp);
 }
 
-// Function to update a user by ID
 void updateUser() {
     FILE *fp = fopen(FILENAME, "r");
     if (!fp) {
@@ -66,7 +64,7 @@ void updateUser() {
         if (u.id == id) {
             found = 1;
             printf("Enter new Name: ");
-            scanf("%s", u.name);
+            scanf("%s", &u.name);
             printf("Enter new Age: ");
             scanf("%d", &u.age);
         }
@@ -85,7 +83,6 @@ void updateUser() {
         printf("User with ID %d not found.\n", id);
 }
 
-// Function to delete a user by ID
 void deleteUser() {
     FILE *fp = fopen(FILENAME, "r");
     if (!fp) {
@@ -103,7 +100,7 @@ void deleteUser() {
     while (fscanf(fp, "%d %s %d", &u.id, u.name, &u.age) != EOF) {
         if (u.id == id) {
             found = 1;
-            continue; // skip writing this user
+            continue; 
         }
         fprintf(temp, "%d %s %d\n", u.id, u.name, u.age);
     }
@@ -120,7 +117,6 @@ void deleteUser() {
         printf("User with ID %d not found.\n", id);
 }
 
-// Main menu
 int main() {
     int choice;
     while (1) {
