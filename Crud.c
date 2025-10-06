@@ -1,5 +1,4 @@
 #include <stdio.h>
-#include <conio.h>
 #include <stdlib.h>
 #include <string.h>
 
@@ -9,133 +8,168 @@ struct User {
     int age;
 };
 
-const char *FILENAME = "users.txt";
+const char *USER_DATA_FILE = "users.txt";
 
-void createUser() {
-    FILE *fp = fopen(FILENAME, "a");
-    if (!fp) {
-        printf("Error opening file!\n");
-        return;
+FILE* openFile(const char *filename, const char *mode) {
+    FILE *filePtr = fopen(filename, mode);
+    if (!filePtr) {
+        printf("Error: Unable to open file '%s'!\n", filename);
     }
-
-    struct User u;
-    printf("Enter ID: ");
-    scanf("%d", &u.id);
-    printf("Enter Name: ");
-    scanf("%s", &u.name);
-    printf("Enter Age: ");
-    scanf("%d", &u.age);
-
-    fprintf(fp, "%d %s %d\n", u.id, u.name, u.age);
-    fclose(fp);
-    printf("User added successfully!\n");
+    return filePtr;
 }
 
-void readUsers() {
-    FILE *fp = fopen(FILENAME, "r");
-    if (!fp) {
+void closeFile(FILE *filePtr) {
+    if (filePtr != NULL) {
+        fclose(filePtr);
+    }
+}
+
+struct User readUserData() {
+    struct User newUser;
+    printf("Enter User ID: ");
+    scanf("%d", &newUser.id);
+    printf("Enter Name: ");
+    scanf("%s", newUser.name);
+    printf("Enter Age: ");
+    scanf("%d", &newUser.age);
+    return newUser;
+}
+
+void createUser() {
+    FILE *filePtr = openFile(USER_DATA_FILE, "a");
+    if (!filePtr){ return;}
+    struct User newUser = readUserData();
+    fprintf(filePtr, "%d %s %d\n", newUser.id, newUser.name, newUser.age);
+    closeFile(filePtr);
+    printf("✅ User added successfully!\n");
+}
+
+void readAllUsers() {
+    FILE *filePtr = openFile(USER_DATA_FILE, "r");
+    if (!filePtr) {
         printf("No users found (file missing).\n");
         return;
     }
-
-    struct User u;
+    struct User currentUser;
     printf("\n--- User Records ---\n");
-    while (fscanf(fp, "%d %s %d", &u.id, u.name, &u.age) != EOF) {
-        printf("ID: %d | Name: %s | Age: %d\n", u.id, u.name, u.age);
+    while (fscanf(filePtr, "%d %s %d", &currentUser.id, currentUser.name, &currentUser.age) != EOF) {
+        printf("ID: %d | Name: %s | Age: %d\n", currentUser.id, currentUser.name, currentUser.age);
     }
-    fclose(fp);
+    closeFile(filePtr);
 }
 
 void updateUser() {
-    FILE *fp = fopen(FILENAME, "r");
-    if (!fp) {
+    FILE *filePtr = openFile(USER_DATA_FILE, "r");
+    if (!filePtr) {
         printf("No users found.\n");
         return;
     }
-
-    FILE *temp = fopen("temp.txt", "w");
-    struct User u;
-    int id, found = 0;
-
-    printf("Enter ID to update: ");
-    scanf("%d", &id);
-
-    while (fscanf(fp, "%d %s %d", &u.id, u.name, &u.age) != EOF) {
-        if (u.id == id) {
-            found = 1;
-            printf("Enter new Name: ");
-            scanf("%s", &u.name);
-            printf("Enter new Age: ");
-            scanf("%d", &u.age);
-        }
-        fprintf(temp, "%d %s %d\n", u.id, u.name, u.age);
+    FILE *tempFile = openFile("temp.txt", "w");
+    if (!tempFile) {
+        closeFile(filePtr);
+        return;
     }
-
-    fclose(fp);
-    fclose(temp);
-
-    remove(FILENAME);
-    rename("temp.txt", FILENAME);
-
-    if (found)
+    struct User currentUser;
+    int userIdToUpdate, isFound = 0;
+    printf("Enter User ID to update: ");
+    scanf("%d", &userIdToUpdate);
+    while (fscanf(filePtr, "%d %s %d", &currentUser.id, currentUser.name, &currentUser.age) != EOF) {
+        if (currentUser.id == userIdToUpdate) {
+            printf("Enter new details for this user:\n");
+            currentUser = readUserData();
+            currentUser.id = userIdToUpdate;
+            isFound = 1;
+        }
+        fprintf(tempFile, "%d %s %d\n", currentUser.id, currentUser.name, currentUser.age);
+    }
+    closeFile(filePtr);
+    closeFile(tempFile);
+    remove(USER_DATA_FILE);
+    rename("temp.txt", USER_DATA_FILE);
+    if (isFound){
         printf("User updated successfully!\n");
-    else
-        printf("User with ID %d not found.\n", id);
+    }
+    else{
+        printf("User with ID %d not found.\n", userIdToUpdate);
+    }
 }
 
 void deleteUser() {
-    FILE *fp = fopen(FILENAME, "r");
-    if (!fp) {
+    FILE *filePtr = openFile(USER_DATA_FILE, "r");
+    if (!filePtr) {
         printf("No users found.\n");
         return;
     }
-
-    FILE *temp = fopen("temp.txt", "w");
-    struct User u;
-    int id, found = 0;
-
-    printf("Enter ID to delete: ");
-    scanf("%d", &id);
-
-    while (fscanf(fp, "%d %s %d", &u.id, u.name, &u.age) != EOF) {
-        if (u.id == id) {
-            found = 1;
-            continue; 
-        }
-        fprintf(temp, "%d %s %d\n", u.id, u.name, u.age);
+    FILE *tempFile = openFile("temp.txt", "w");
+    if (!tempFile) {
+        closeFile(filePtr);
+        return;
     }
-
-    fclose(fp);
-    fclose(temp);
-
-    remove(FILENAME);
-    rename("temp.txt", FILENAME);
-
-    if (found)
-        printf("User deleted successfully!\n");
-    else
-        printf("User with ID %d not found.\n", id);
+    struct User currentUser;
+    int userIdToDelete, isFound = 0;
+    printf("Enter User ID to delete: ");
+    scanf("%d", &userIdToDelete);
+    while (fscanf(filePtr, "%d %s %d", &currentUser.id, currentUser.name, &currentUser.age) != EOF) {
+        if (currentUser.id == userIdToDelete) {
+            isFound = 1;
+            continue;
+        }
+        fprintf(tempFile, "%d %s %d\n", currentUser.id, currentUser.name, currentUser.age);
+    }
+    closeFile(filePtr);
+    closeFile(tempFile);
+    remove(USER_DATA_FILE);
+    rename("temp.txt", USER_DATA_FILE);
+    if (isFound){
+        printf("✅ User deleted successfully!\n");
+    }
+    else{        
+        printf("⚠️ User with ID %d not found.\n", userIdToDelete);
+    }
 }
 
 int main() {
-    int choice;
+    int menuChoice;
+    enum CrudOperation {
+        ADD_USER = 1,
+        DISPLAY_USERS = 2,
+        UPDATE_USER = 3,
+        DELETE_USER = 4,
+        EXIT_APP = 5
+    };
     while (1) {
-        printf("\n--- CRUD Menu ---\n");
+        printf("\n--- USER MANAGEMENT MENU ---\n");
         printf("1. Create User\n");
-        printf("2. Read Users\n");
+        printf("2. Display All Users\n");
         printf("3. Update User\n");
         printf("4. Delete User\n");
         printf("5. Exit\n");
-        printf("Enter choice: ");
-        scanf("%d", &choice);
-
-        switch (choice) {
-            case 1: createUser(); break;
-            case 2: readUsers(); break;
-            case 3: updateUser(); break;
-            case 4: deleteUser(); break;
-            case 5: exit(0);
-            default: printf("Invalid choice!\n");
+        printf("Enter your choice: ");
+        scanf("%d", &menuChoice);
+        switch ((enum CrudOperation)menuChoice) {
+            case ADD_USER:{
+                createUser();
+                break;
+            }
+            case DISPLAY_USERS:{
+                readAllUsers();
+                break;
+            }
+            case UPDATE_USER:{
+                updateUser();
+                break;
+            }
+            case DELETE_USER:{
+                deleteUser();
+                break;
+            }
+            case EXIT_APP:{
+                printf("Exiting program...\n");
+                exit(0);
+            }
+            default:{
+                printf("Invalid choice! Please try again.\n");
+            }
         }
     }
     return 0;
