@@ -147,11 +147,11 @@ void deleteUser()
     rename("temp.txt", USER_DATA_FILE);
     if (isFound)
     {
-        printf("✅ User deleted successfully!\n");
+        printf("User deleted successfully!\n");
     }
     else
     {
-        printf("⚠️ User with ID %d not found.\n", userIdToDelete);
+        printf("User with ID %d not found.\n", userIdToDelete);
     }
 }
 
@@ -201,7 +201,6 @@ int main()
         case EXIT_APP:
         {
             printf("Exiting program...\n");
-            exit(0);
         }
         default:
         {
