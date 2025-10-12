@@ -14,6 +14,7 @@ const char *USER_DATA_FILE = "users.txt";
 FILE *openFile(const char *filename, const char *mode)
 {
     FILE *filePtr = fopen(filename, mode);
+    
     if (!filePtr)
     {
         printf("Error: Unable to open file '%s'!\n", filename);
