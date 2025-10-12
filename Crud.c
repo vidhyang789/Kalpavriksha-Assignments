@@ -44,14 +44,13 @@ struct User readUserData()
 void createUser()
 {
     FILE *filePtr = openFile(USER_DATA_FILE, "a");
-    if (!filePtr)
+    if (filePtr)
     {
-        return;
+        struct User newUser = readUserData();
+        fprintf(filePtr, "%d %s %d\n", newUser.id, newUser.name, newUser.age);
+        closeFile(filePtr);
+        printf("User added successfully!\n");
     }
-    struct User newUser = readUserData();
-    fprintf(filePtr, "%d %s %d\n", newUser.id, newUser.name, newUser.age);
-    closeFile(filePtr);
-    printf("✅ User added successfully!\n");
 }
 
 void readAllUsers()
@@ -59,16 +58,19 @@ void readAllUsers()
     FILE *filePtr = openFile(USER_DATA_FILE, "r");
     if (!filePtr)
     {
+        struct User currentUser;
+        printf("\n--- User Records ---\n");
+        while (fscanf(filePtr, "%d %s %d", &currentUser.id, currentUser.name, &currentUser.age) != EOF)
+        {
+            printf("ID: %d | Name: %s | Age: %d\n", currentUser.id, currentUser.name, currentUser.age);
+        }
+        closeFile(filePtr);
+    }
+    else{
         printf("No users found (file missing).\n");
         return;
     }
-    struct User currentUser;
-    printf("\n--- User Records ---\n");
-    while (fscanf(filePtr, "%d %s %d", &currentUser.id, currentUser.name, &currentUser.age) != EOF)
-    {
-        printf("ID: %d | Name: %s | Age: %d\n", currentUser.id, currentUser.name, currentUser.age);
-    }
-    closeFile(filePtr);
+
 }
 
 void updateUser()
