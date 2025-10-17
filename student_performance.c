@@ -98,12 +98,14 @@ void printStudentResult(const Student student[], int noOfStudents)
         printf("Average: %.2f\n", student[index].averageMarks);
         printf("Grade: %c\n", student[index].studentGrade);
 
-        if (student[index].studentGrade != 'F')
+        if (student[index].studentGrade == 'F')
         {
-            printf("Performance: ");
-            printPerformance(student[index].studentGrade);
             printf("\n");
+            continue;
         }
+        printf("Performance: ");
+        printPerformance(student[index].studentGrade);
+        printf("\n");
     }
 }
 
