@@ -4,61 +4,65 @@
 typedef struct Student
 {
     int rollNumber;
-    char studentName[50];
-    int marksArray[3];
+    char name[50];
+    int marks[3];
     float totalMarks;
     float averageMarks;
-    char studentGrade;
+    char grade;
 } Student;
 
-char calculateGrade(float averageMarks)
+char calculateGrade(const float averageMarks)
 {
-    char studentGrade;
+    char grade;
     if (averageMarks >= 85)
     {
-        studentGrade = 'A';
+        grade = 'A';
     }
     else if (averageMarks >= 70)
     {
-        studentGrade = 'B';
+        grade = 'B';
     }
     else if (averageMarks >= 50)
     {
-        studentGrade = 'C';
+        grade = 'C';
     }
     else if (averageMarks >= 35)
     {
-        studentGrade = 'D';
+        grade = 'D';
     }
     else
     {
-        studentGrade = 'F';
+        grade = 'F';
     }
-    return studentGrade;
+    return grade;
 }
 
-void inputStudentData(Student students[], int noOfStudents)
+void inputStudentData(Student students[],const int numberOfStudents)
 {
-    for (int index = 0; index < noOfStudents; ++index)
+    for (int index = 0; index < numberOfStudents; ++index)
     {
         scanf("%d %s %d %d %d",
               &students[index].rollNumber,
-              students[index].studentName,
-              &students[index].marksArray[0],
-              &students[index].marksArray[1],
-              &students[index].marksArray[2]);
-
-        students[index].totalMarks =
-            students[index].marksArray[0] +
-            students[index].marksArray[1] +
-            students[index].marksArray[2];
-
-        students[index].averageMarks = students[index].totalMarks / 3.0f;
-        students[index].studentGrade = calculateGrade(students[index].averageMarks);
+              students[index].name,
+              &students[index].marks[0],
+              &students[index].marks[1],
+              &students[index].marks[2]);
     }
 }
 
-void printPerformance(char grade)
+void calculateStudentData(Student students[],const int numberOfStudents){
+    for(int index = 0;index < numberOfStudents; ++index){    
+        students[index].totalMarks =
+                students[index].marks[0] +
+                students[index].marks[1] +
+                students[index].marks[2];
+    
+        students[index].averageMarks = students[index].totalMarks / 3.0f;
+        students[index].grade = calculateGrade(students[index].averageMarks);
+    }
+}
+
+void printPerformance(const char grade)
 {
     int starCount = 0;
 
@@ -86,30 +90,30 @@ void printPerformance(char grade)
     }
 }
 
-void printStudentResult(const Student student[], int noOfStudents)
+void printStudentResult(const Student student[],const int numberOfStudents)
 {
-    for (int index = 0; index < noOfStudents; index++)
+    for (int index = 0; index < numberOfStudents; index++)
     {
         printf("\n");
 
         printf("Roll: %d\n", student[index].rollNumber);
-        printf("Name: %s\n", student[index].studentName);
+        printf("Name: %s\n", student[index].name);
         printf("Total: %.0f\n", student[index].totalMarks);
         printf("Average: %.2f\n", student[index].averageMarks);
-        printf("Grade: %c\n", student[index].studentGrade);
+        printf("Grade: %c\n", student[index].grade);
 
-        if (student[index].studentGrade == 'F')
+        if (student[index].grade == 'F')
         {
             printf("\n");
             continue;
         }
         printf("Performance: ");
-        printPerformance(student[index].studentGrade);
+        printPerformance(student[index].grade);
         printf("\n");
     }
 }
 
-void printRollNumbersRecursive(const Student students[], int index, int totalCount)
+void printRollNumbersRecursive(const Student students[], int index,const int totalCount)
 {
     if (index == totalCount)
     {
@@ -122,16 +126,17 @@ void printRollNumbersRecursive(const Student students[], int index, int totalCou
 
 int main()
 {
-    int noOfStudents;
-    scanf("%d", &noOfStudents);
+    int numberOfStudents;
+    scanf("%d", &numberOfStudents);
 
-    Student students[noOfStudents];
+    Student students[numberOfStudents];
 
-    inputStudentData(students, noOfStudents);
-    printStudentResult(students, noOfStudents);
+    inputStudentData(students, numberOfStudents);
+    calculateStudentData(students, numberOfStudents);
+    printStudentResult(students, numberOfStudents);
 
     printf("\nList of Roll Numbers (via recursion): ");
-    printRollNumbersRecursive(students, 0, noOfStudents);
+    printRollNumbersRecursive(students, 0, numberOfStudents);
 
     return 0;
 }
