@@ -2,36 +2,19 @@
 #include <stdlib.h>
 #include <time.h>
 
-void initializeMatrix(int **matrix,int matrixSize){
-    for (int i = 0; i < matrixSize; ++i)
-    {
-        for (int j = 0; j < matrixSize; ++j)
-        {
-            *(*(matrix + i) + j) = rand() % 256;
-        }
-    }
-}
-
-void allocateMemory(int **matrix,int matrixSize){
-    for (int i = 0; i < matrixSize; ++i)
-    {
-        *(matrix + i) = (int *)malloc(matrixSize * sizeof(int));
-    }
-}
-
-static void displayMatrix(int **matrix, int matrixSize)
+static void displayMatrix(int *matrixPtr, int matrixSize)
 {
     for (int index = 0; index < matrixSize; ++index)
     {
         for (int index2 = 0; index2 < matrixSize; ++index2)
         {
-            printf("%4d", *(*(matrix + index) + index2));
+            printf("%3d", *(matrixPtr + index * matrixSize + index2));
         }
         printf("\n");
     }
 }
 
-static void rotateMatrix(int **matrix, int matrixSize)
+static void rotateMatrix(int *matrixPtr, int matrixSize)
 {
     for (int layer = 0; layer < matrixSize / 2; ++layer)
     {
@@ -40,11 +23,10 @@ static void rotateMatrix(int **matrix, int matrixSize)
         for (int index = first; index < last; ++index)
         {
             int offset = index - first;
-            int *top = *(matrix + first) + index;
-            int *left = *(matrix + (last - offset)) + first;
-            int *bottom = *(matrix + last) + (last - offset);
-            int *right = *(matrix + index) + last;
-
+            int *top = matrixPtr + first * matrixSize + index;
+            int *left = matrixPtr + (last - offset) * matrixSize + first;
+            int *bottom = matrixPtr + last * matrixSize + (last - offset);
+            int *right = matrixPtr + (index)*matrixSize + last;
             int temp = *top;
             *top = *left;
             *left = *bottom;
@@ -54,37 +36,21 @@ static void rotateMatrix(int **matrix, int matrixSize)
     }
 }
 
-static void smootheningFilter(int **matrix, int matrixSize)
+static void applySmoothingFilter(int *matrixPtr, int matrixSize)
 {
-    int *previous_row = (int *)malloc(matrixSize * sizeof(int));
-    int *current_row = (int *)malloc(matrixSize * sizeof(int));
-
-    for (int col_index = 0; col_index < matrixSize; col_index++)
+    for (int index = 0; index < matrixSize; ++index)
     {
-        *(previous_row + col_index) = *(*(matrix + 0) + col_index);
-    }
-
-    for (int row_index = 0; row_index < matrixSize; row_index++)
-    {
-        for (int col_index = 0; col_index < matrixSize; col_index++)
-        {
-            *(current_row + col_index) = *(*(matrix + row_index) + col_index);
-        }
-
-        for (int col_index = 0; col_index < matrixSize; col_index++)
+        for (int index2 = 0; index2 < matrixSize; ++index2)
         {
             int sum = 0;
             int count = 0;
-
-            for (int di = -1; di <= 1; di++)
+            for (int row = -1; row <= 1; ++row)
             {
-                for (int dj = -1; dj <= 1; dj++)
+                for (int col = -1; col <= 1; ++col)
                 {
-                    int neighbour_row_index = row_index + di;
-                    int neighbour_col_index = col_index + dj;
-
-                    if (neighbour_row_index >= 0 && neighbour_row_index < matrixSize &&
-                        neighbour_col_index >= 0 && neighbour_col_index < matrixSize)
+                    int newRowIndex = index + row;
+                    int newColIndex = index2 + col;
+                    if (newRowIndex >= 0 && newRowIndex < matrixSize && newColIndex >= 0 && newColIndex < matrixSize)
                     {
                         int value;
 
@@ -105,52 +71,51 @@ static void smootheningFilter(int **matrix, int matrixSize)
 
                         sum += value;
                         count++;
+                        sum += *(matrixPtr + newRowIndex * matrixSize + newColIndex);
+                        ++count;
                     }
                 }
             }
-            *(*(matrix + row_index) + col_index) = sum / count;
+            *(matrixPtr + index * matrixSize + index2) = sum / count;
         }
-
-        int *temp = previous_row;
-        previous_row = current_row;
-        current_row = temp;
     }
-
-    free(previous_row);
-    free(current_row);
 }
 
-int main()
+int main(void)
 {
-    int matrixSize;
-    printf("Enter matrix matrixSize (2-10): ");
-    scanf("%d", &matrixSize);
+    int size;
 
-    if (matrixSize >= 2 || matrixSize <= 10)
+    printf("Enter matrix size (2-10): ");
+    scanf("%d", &size);
+
+    if (size < 2 || size > 10)
     {
-        int **matrix = (int **)malloc(matrixSize * sizeof(int *));
-
-        allocateMemory(matrix, matrixSize);
-
-        srand((unsigned int)time(NULL));
-        initializeMatrix(matrix, matrixSize);
-
-        printf("Original Randomly Generated Matrix:\n");
-        displayMatrix(matrix, matrixSize);
-
-        rotateMatrix(matrix, matrixSize);
-        printf("\nMatrix after 90° Clockwise Rotation:\n");
-        displayMatrix(matrix, matrixSize);
-
-        smootheningFilter(matrix, matrixSize);
-        printf("\nMatrix after Applying 3×3 Smoothing Filter:\n");
-        displayMatrix(matrix, matrixSize);
-
-        for (int i = 0; i < matrixSize; ++i)
-        {
-            free(*(matrix + i));
-        }
-        free(matrix);
+        return 0;
     }
+
+    int matrix[size][size];
+    int *matrixPtr = &matrix[0][0];
+
+    srand((unsigned int)time(NULL));
+
+    for (int index = 0; index < size; ++index)
+    {
+        for (int index2 = 0; index2 < size; ++index2)
+        {
+            *(matrixPtr + index * size + index2) = rand() % 256;
+        }
+    }
+
+    printf("Original Randomly Generated Matrix:\n");
+    displayMatrix(matrixPtr, size);
+    rotateMatrix(matrixPtr, size);
+
+    printf("\nMatrix after 90° Clockwise Rotation:\n");
+    displayMatrix(matrixPtr, size);
+    applySmoothingFilter(matrixPtr, size);
+
+    printf("\nMatrix after Applying 3×3 Smoothing Filter:\n");
+    displayMatrix(matrixPtr, size);
+
     return 0;
 }
