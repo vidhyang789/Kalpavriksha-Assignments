@@ -87,18 +87,22 @@ static void smootheningFilter(int **matrix, int matrixSize)
                         neighbour_col_index >= 0 && neighbour_col_index < matrixSize)
                     {
                         int value;
+
                         if (neighbour_row_index == row_index - 1)
                         {
                             value = *(previous_row + neighbour_col_index);
                         }
+
                         else if (neighbour_row_index == row_index)
                         {
                             value = *(current_row + neighbour_col_index);
                         }
+
                         else
                         {
                             value = *(*(matrix + neighbour_row_index) + neighbour_col_index);
                         }
+
                         sum += value;
                         count++;
                     }
