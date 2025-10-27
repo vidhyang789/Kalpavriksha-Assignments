@@ -2,7 +2,8 @@
 #include <stdlib.h>
 #include <time.h>
 
-void initializeMatrix(int **matrix,int matrixSize){
+void initializeMatrix(int **matrix, int matrixSize)
+{
     for (int i = 0; i < matrixSize; ++i)
     {
         for (int j = 0; j < matrixSize; ++j)
@@ -12,7 +13,8 @@ void initializeMatrix(int **matrix,int matrixSize){
     }
 }
 
-void allocateMemory(int **matrix,int matrixSize){
+void allocateMemory(int **matrix, int matrixSize)
+{
     for (int i = 0; i < matrixSize; ++i)
     {
         *(matrix + i) = (int *)malloc(matrixSize * sizeof(int));
@@ -105,7 +107,6 @@ static void smootheningFilter(int **matrix, int matrixSize)
 
                         sum += value;
                         count++;
-                        
                     }
                 }
             }
