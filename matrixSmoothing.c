@@ -4,30 +4,30 @@
 
 void initializeMatrix(int **matrix, const int matrixSize)
 {
-    for (int i = 0; i < matrixSize; ++i)
+    for (int row = 0; row < matrixSize; ++row)
     {
-        for (int j = 0; j < matrixSize; ++j)
+        for (int col = 0; col < matrixSize; ++col)
         {
-            *(*(matrix + i) + j) = rand() % 256;
+            *(*(matrix + row) + col) = rand() % 256;
         }
     }
 }
 
 void allocateMemory(int **matrix, const int matrixSize)
 {
-    for (int i = 0; i < matrixSize; ++i)
+    for (int row = 0; row < matrixSize; ++row)
     {
-        *(matrix + i) = (int *)malloc(matrixSize * sizeof(int));
+        *(matrix + row) = (int *)malloc(matrixSize * sizeof(int));
     }
 }
 
 static void displayMatrix(int **matrix, const int matrixSize)
 {
-    for (int index = 0; index < matrixSize; ++index)
+    for (int row = 0; row < matrixSize; ++row)
     {
-        for (int index2 = 0; index2 < matrixSize; ++index2)
+        for (int col = 0; col < matrixSize; ++col)
         {
-            printf("%4d", *(*(matrix + index) + index2));
+            printf("%4d", *(*(matrix + row) + col));
         }
         printf("\n");
     }
@@ -118,13 +118,22 @@ static void smootheningFilter(int **matrix, const int matrixSize)
     free(current_row);
 }
 
+void deallocateMemory(int **matrix,int matrixSize){
+    for (int index = 0; index < matrixSize; ++index)
+    {
+        free(*(matrix + index));
+    }
+
+    free(matrix);
+}
+
 int main()
 {
     int matrixSize;
     printf("Enter matrix matrixSize (2-10): ");
     scanf("%d", &matrixSize);
 
-    if (matrixSize >= 2 || matrixSize <= 10)
+    if (matrixSize >= 2 && matrixSize <= 10)
     {
         int **matrix = (int **)malloc(matrixSize * sizeof(int *));
 
@@ -144,12 +153,7 @@ int main()
         printf("\nMatrix after Applying 3×3 Smoothing Filter:\n");
         displayMatrix(matrix, matrixSize);
 
-        for (int i = 0; i < matrixSize; ++i)
-        {
-            free(*(matrix + i));
-        }
-
-        free(matrix);
+        deallocateMemory(matrix, matrixSize);
     }
     return 0;
 }
