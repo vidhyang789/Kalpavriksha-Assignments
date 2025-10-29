@@ -21,7 +21,7 @@ void allocateMemory(int **matrix, const int matrixSize)
     }
 }
 
-static void displayMatrix(int **matrix, const int matrixSize)
+void displayMatrix(int **matrix, const int matrixSize)
 {
     for (int row = 0; row < matrixSize; ++row)
     {
@@ -33,7 +33,7 @@ static void displayMatrix(int **matrix, const int matrixSize)
     }
 }
 
-static void rotateMatrix(int **matrix, const int matrixSize)
+void rotateMatrix(int **matrix, const int matrixSize)
 {
     for (int layer = 0; layer < matrixSize / 2; ++layer)
     {
@@ -56,7 +56,7 @@ static void rotateMatrix(int **matrix, const int matrixSize)
     }
 }
 
-static void smootheningFilter(int **matrix, const int matrixSize)
+void smootheningFilter(int **matrix, const int matrixSize)
 {
     int *previous_row = (int *)malloc(matrixSize * sizeof(int));
     int *current_row = (int *)malloc(matrixSize * sizeof(int));
