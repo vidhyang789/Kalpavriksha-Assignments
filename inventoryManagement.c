@@ -22,7 +22,7 @@ typedef enum
     EXIT
 } MenuOptions;
 
-int lastProductIndex = 0;
+int totalProducts = 0;
 
 void printMenu()
 {
@@ -38,7 +38,7 @@ void printMenu()
     printf("Enter your choice: ");
 }
 
-void inputProductDetails(Product *listOfProducts, int index)
+void inputProductDetails(const Product *listOfProducts, int index)
 {
     printf("Product ID : ");
     scanf("%d", &((listOfProducts + index)->id));
@@ -52,7 +52,7 @@ void inputProductDetails(Product *listOfProducts, int index)
 
 void addProduct(Product **listOfProducts)
 {
-    Product *temp = realloc(*listOfProducts, (lastProductIndex + 1) * sizeof(Product));
+    Product *temp = realloc(*listOfProducts, (totalProducts + 1) * sizeof(Product));
     if (temp == NULL)
     {
         printf("Memory allocation failed!\n");
@@ -61,44 +61,39 @@ void addProduct(Product **listOfProducts)
     {
         *listOfProducts = temp;
         printf("\nEnter new product details: \n");
-        inputProductDetails(*listOfProducts, lastProductIndex);
-        lastProductIndex++;
+        inputProductDetails(*listOfProducts, totalProducts);
+        totalProducts++;
 
         printf("Product added successfully!\n");
     }
 }
 
-void displayProduct(Product *listOfProducts, int index)
-{
-    printf("Product ID: %d | Name: %s | Price: %.2f | Quantity: %d \n",
-           (listOfProducts + index)->id, (listOfProducts + index)->name,
-           (listOfProducts + index)->price, (listOfProducts + index)->quantity);
-}
-
-void displayProducts(Product *listOfProducts)
+void displayProducts(const Product *listOfProducts)
 {
     printf("\n");
     printf("========= PRODUCT LIST ========= \n");
-    for (int index = 0; index < lastProductIndex; index++)
+    for (int index = 0; index < totalProducts; index++)
     {
-        displayProduct(listOfProducts, index);
+        printf("Product ID: %d | Name: %s | Price: %.2f | Quantity: %d \n",
+               (listOfProducts + index)->id, (listOfProducts + index)->name,
+               (listOfProducts + index)->price, (listOfProducts + index)->quantity);
     }
 }
 
 void updateQuantity(Product *listOfProducts)
 {
-    int productIdForUpdate, newQuantity;
+    int productId, newQuantity;
 
     printf("\nEnter Product ID to update quantity : ");
-    scanf("%d", &productIdForUpdate);
+    scanf("%d", &productId);
     printf("Enter New Quantity : ");
     scanf("%d", &newQuantity);
 
     bool updated = false;
 
-    for (int index = 0; index < lastProductIndex; index++)
+    for (int index = 0; index < totalProducts; index++)
     {
-        if ((listOfProducts + index)->id == productIdForUpdate)
+        if ((listOfProducts + index)->id == productId)
         {
             (listOfProducts + index)->quantity = newQuantity;
             updated = true;
@@ -116,21 +111,23 @@ void updateQuantity(Product *listOfProducts)
     }
 }
 
-void searchProductById(Product *listOfProducts)
+void searchProductById(const Product *listOfProducts)
 {
-    int idToSearch;
+    int productId;
 
     printf("\nEnter Product Id To Search : ");
-    scanf("%d", &idToSearch);
+    scanf("%d", &productId);
 
     bool found = false;
 
-    for (int index = 0; index < lastProductIndex; index++)
+    for (int index = 0; index < totalProducts; index++)
     {
-        if ((listOfProducts + index)->id == idToSearch)
+        if ((listOfProducts + index)->id == productId)
         {
             printf("Product Found : ");
-            displayProduct(listOfProducts, index);
+            printf("Product ID: %d | Name: %s | Price: %.2f | Quantity: %d \n",
+                   (listOfProducts + index)->id, (listOfProducts + index)->name,
+                   (listOfProducts + index)->price, (listOfProducts + index)->quantity);
             found = true;
             break;
         }
@@ -142,30 +139,34 @@ void searchProductById(Product *listOfProducts)
     }
 }
 
-bool isSubstring(const char *mainString, const char *subString)
+bool isSubstring(const char *productName, const char *searchName)
 {
-    int mainLen = 0, subLen = 0;
+    int productNameLen = 0, searchNameLen = 0;
 
-    while (mainString[mainLen] != '\0')
-        mainLen++;
-    while (subString[subLen] != '\0')
-        subLen++;
+    while (productName[productNameLen] != '\0')
+    {
+        productNameLen++;
+    }
+    while (searchName[searchNameLen] != '\0')
+    {
+        searchNameLen++;
+    }
 
     bool ans = false;
 
-    if (subLen != 0 && subLen <= mainLen)
+    if (searchNameLen != 0 && searchNameLen <= productNameLen)
     {
-        for (int i = 0; i <= mainLen - subLen; i++)
+        for (int index = 0; index <= productNameLen - searchNameLen; index++)
         {
-            int j;
-            for (j = 0; j < subLen; j++)
+            int index2;
+            for (index2 = 0; index2 < searchNameLen; index2++)
             {
-                if (mainString[i + j] != subString[j])
+                if (productName[index + index2] != searchName[index2])
                 {
                     break;
                 }
             }
-            if (j == subLen)
+            if (index2 == searchNameLen)
             {
                 ans = true;
             }
@@ -175,17 +176,17 @@ bool isSubstring(const char *mainString, const char *subString)
     return ans;
 }
 
-void searchProductByName(Product *listOfProducts)
+void searchProductByName(const Product *listOfProducts)
 {
-    char nameToSearch[50];
+    char productName[50];
     bool found = false;
 
     printf("\nEnter Name To search (Partial Allowed): ");
-    scanf("%s", nameToSearch);
+    scanf("%s", productName);
 
-    for (int index = 0; index < lastProductIndex; index++)
+    for (int index = 0; index < totalProducts; index++)
     {
-        if (isSubstring((listOfProducts + index)->name, nameToSearch))
+        if (isSubstring((listOfProducts + index)->name, productName))
         {
             if (!found)
             {
@@ -202,7 +203,7 @@ void searchProductByName(Product *listOfProducts)
     }
 }
 
-void searchProductByPriceRange(Product *listOfProducts)
+void searchProductByPriceRange(const Product *listOfProducts)
 {
     float maxPrice, minPrice;
     bool found = false;
@@ -213,7 +214,7 @@ void searchProductByPriceRange(Product *listOfProducts)
     printf("Enter Maximum Price : ");
     scanf("%f", &maxPrice);
 
-    for (int index = 0; index < lastProductIndex; index++)
+    for (int index = 0; index < totalProducts; index++)
     {
         if ((listOfProducts + index)->price >= minPrice &&
             (listOfProducts + index)->price <= maxPrice)
@@ -235,15 +236,15 @@ void searchProductByPriceRange(Product *listOfProducts)
 
 void deleteProduct(Product **listOfProducts)
 {
-    int idToDelete;
+    int productId;
     int found = -1;
 
     printf("\nEnter Product ID to delete: ");
-    scanf("%d", &idToDelete);
+    scanf("%d", &productId);
 
-    for (int index = 0; index < lastProductIndex; index++)
+    for (int index = 0; index < totalProducts; index++)
     {
-        if ((*listOfProducts)[index].id == idToDelete)
+        if ((*listOfProducts)[index].id == productId)
         {
             found = index;
             break;
@@ -256,15 +257,15 @@ void deleteProduct(Product **listOfProducts)
     }
     else
     {
-        for (int index = found; index < lastProductIndex - 1; index++)
+        for (int index = found; index < totalProducts - 1; index++)
         {
             (*listOfProducts)[index] = (*listOfProducts)[index + 1];
         }
 
-        lastProductIndex--;
+        totalProducts--;
 
-        Product *temp = realloc(*listOfProducts, lastProductIndex * sizeof(Product));
-        if (temp != NULL || lastProductIndex == 0)
+        Product *temp = realloc(*listOfProducts, totalProducts * sizeof(Product));
+        if (temp != NULL || totalProducts == 0)
         {
             *listOfProducts = temp;
         }
@@ -320,7 +321,7 @@ void inputInitialProducts(Product *listOfProducts, int initialNumberOfProducts)
         printf("\nEnter details for product %d: \n", index + 1);
         inputProductDetails(listOfProducts, index);
     }
-    lastProductIndex = initialNumberOfProducts;
+    totalProducts = initialNumberOfProducts;
 }
 
 int main()
