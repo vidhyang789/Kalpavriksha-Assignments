@@ -75,7 +75,7 @@ void displayProducts(struct Product *listOfProducts)
     for (int index = 0; index < totalProducts; index++)
     {
         printf("Product ID: %d | Name: %s | Price: %.2f | Quantity: %d \n",
-               (* (listOfProducts + index)).id, (listOfProducts + index)->name,
+               (listOfProducts + index)->id, (listOfProducts + index)->name,
                (listOfProducts + index)->price, (listOfProducts + index)->quantity);
     }
 }
@@ -225,6 +225,7 @@ void searchProductByPriceRange(const Product *listOfProducts)
             {
                 printf("Products In Price Range : \n");
             }
+
             printf("Product ID: %d | Name: %s | Price: %.2f | Quantity: %d \n",
                 (listOfProducts + index)->id, (listOfProducts + index)->name,
                 (listOfProducts + index)->price, (listOfProducts + index)->quantity);
