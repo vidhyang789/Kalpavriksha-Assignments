@@ -68,14 +68,14 @@ void addProduct(Product **listOfProducts)
     }
 }
 
-void displayProducts(const Product *listOfProducts)
+void displayProducts(struct Product *listOfProducts)
 {
     printf("\n");
     printf("========= PRODUCT LIST ========= \n");
     for (int index = 0; index < totalProducts; index++)
     {
         printf("Product ID: %d | Name: %s | Price: %.2f | Quantity: %d \n",
-               (listOfProducts + index)->id, (listOfProducts + index)->name,
+               (* (listOfProducts + index)).id, (listOfProducts + index)->name,
                (listOfProducts + index)->price, (listOfProducts + index)->quantity);
     }
 }
@@ -192,7 +192,9 @@ void searchProductByName(const Product *listOfProducts)
             {
                 printf("\nProducts Found:\n");
             }
-            displayProduct(listOfProducts, index);
+            printf("Product ID: %d | Name: %s | Price: %.2f | Quantity: %d \n",
+                (listOfProducts + index)->id, (listOfProducts + index)->name,
+                (listOfProducts + index)->price, (listOfProducts + index)->quantity);
             found = true;
         }
     }
@@ -223,7 +225,9 @@ void searchProductByPriceRange(const Product *listOfProducts)
             {
                 printf("Products In Price Range : \n");
             }
-            displayProduct(listOfProducts, index);
+            printf("Product ID: %d | Name: %s | Price: %.2f | Quantity: %d \n",
+                (listOfProducts + index)->id, (listOfProducts + index)->name,
+                (listOfProducts + index)->price, (listOfProducts + index)->quantity);
             found = true;
         }
     }
