@@ -51,7 +51,7 @@ void inputProductDetails(Product *listOfProducts, int index)
     scanf("%d", &((listOfProducts + index)->quantity));
 }
 
-void addNewProduct(Product **listOfProducts)
+void addProduct(Product **listOfProducts)
 {
     Product *temp = realloc(*listOfProducts, (lastProductIndex + 1) * sizeof(Product));
     if (temp == NULL)
@@ -69,20 +69,20 @@ void addNewProduct(Product **listOfProducts)
     }
 }
 
-void printSingleProduct(Product *listOfProducts, int index)
+void displayProduct(Product *listOfProducts, int index)
 {
     printf("Product ID: %d | Name: %s | Price: %.2f | Quantity: %d \n",
            (listOfProducts + index)->id, (listOfProducts + index)->name,
            (listOfProducts + index)->price, (listOfProducts + index)->quantity);
 }
 
-void viewAllProduct(Product *listOfProducts)
+void displayProducts(Product *listOfProducts)
 {
     printf("\n");
     printf("========= PRODUCT LIST ========= \n");
     for (int index = 0; index < lastProductIndex; index++)
     {
-        printSingleProduct(listOfProducts, index);
+        displayProduct(listOfProducts, index);
     }
 }
 
@@ -131,7 +131,7 @@ void searchProductById(Product *listOfProducts)
         if ((listOfProducts + index)->id == idToSearch)
         {
             printf("Product Found : ");
-            printSingleProduct(listOfProducts, index);
+            displayProduct(listOfProducts, index);
             found = true;
             break;
         }
@@ -143,30 +143,63 @@ void searchProductById(Product *listOfProducts)
     }
 }
 
+bool isSubstring(const char *mainString, const char *subString)
+{
+    int mainLen = 0, subLen = 0;
+
+    while (mainString[mainLen] != '\0')
+        mainLen++;
+    while (subString[subLen] != '\0')
+        subLen++;
+
+    bool ans = false;
+
+    if (subLen != 0 && subLen <= mainLen)
+    {
+        for (int i = 0; i <= mainLen - subLen; i++)
+        {
+            int j;
+            for (j = 0; j < subLen; j++)
+            {
+                if (mainString[i + j] != subString[j])
+                {
+                    break;
+                }
+            }
+            if (j == subLen)
+            {
+                ans = true;
+            }
+        }
+    }
+
+    return ans;
+}
+
 void searchProductByName(Product *listOfProducts)
 {
     char nameToSearch[50];
     bool found = false;
 
-    printf("\nEnter Name To search (Partial Allowed) : ");
+    printf("\nEnter Name To search (Partial Allowed): ");
     scanf("%s", nameToSearch);
 
     for (int index = 0; index < lastProductIndex; index++)
     {
-        if (strstr((listOfProducts + index)->name, nameToSearch) != NULL)
+        if (isSubstring((listOfProducts + index)->name, nameToSearch))
         {
             if (!found)
             {
-                printf("Products Found : \n");
+                printf("\nProducts Found:\n");
             }
-            printSingleProduct(listOfProducts, index);
+            displayProduct(listOfProducts, index);
             found = true;
         }
     }
 
     if (!found)
     {
-        printf("No Products Found");
+        printf("\nNo Products Found.\n");
     }
 }
 
@@ -190,7 +223,7 @@ void searchProductByPriceRange(Product *listOfProducts)
             {
                 printf("Products In Price Range : \n");
             }
-            printSingleProduct(listOfProducts, index);
+            displayProduct(listOfProducts, index);
             found = true;
         }
     }
@@ -252,10 +285,10 @@ void displayMenuTakingChoice(Product **listOfProducts)
         switch (choice)
         {
         case ADD_PRODUCT:
-            addNewProduct(listOfProducts);
+            addProduct(listOfProducts);
             break;
         case VIEW_ALL_PRODUCTS:
-            viewAllProduct(*listOfProducts);
+            displayProducts(*listOfProducts);
             break;
         case UPDATE_QUANTITY:
             updateQuantity(*listOfProducts);
