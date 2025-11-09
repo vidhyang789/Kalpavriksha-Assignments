@@ -76,9 +76,9 @@ void initializeRootDirectory()
 void initializeVirtualBlock()
 {
     virtualDisk = (char **)malloc(NUM_BLOCKS * sizeof(char *));
-    for (int i = 0; i < NUM_BLOCKS; i++)
+    for (int index = 0; index < NUM_BLOCKS; index++)
     {
-        virtualDisk[i] = (char *)calloc(BLOCK_SIZE, sizeof(char));
+        virtualDisk[index] = (char *)calloc(BLOCK_SIZE, sizeof(char));
     }
 }
 
@@ -359,9 +359,9 @@ void readCmd(char *name)
             {
 
                 int remaining = file->size;
-                for (int i = 0; i < file->blockCount && remaining > 0; i++)
+                for (int index = 0; index < file->blockCount && remaining > 0; index++)
                 {
-                    int blockIndex = *(file->blockPointers + i);
+                    int blockIndex = *(file->blockPointers + index);
                     for (int j = 0; j < BLOCK_SIZE && remaining > 0; j++, remaining--)
                     {
                         char ch = *(*(virtualDisk + blockIndex) + j);
@@ -405,9 +405,9 @@ void deleteCmd(char *name)
         {
             if (target->blockPointers)
             {
-                for (int i = 0; i < target->blockCount; i++)
+                for (int index = 0; index < target->blockCount; index++)
                 {
-                    int blockIndex = *(target->blockPointers + i);
+                    int blockIndex = *(target->blockPointers + index);
                     freeBlock(blockIndex);
                 }
                 free(target->blockPointers);
@@ -601,10 +601,10 @@ void freeFileTree(FileNode *node)
 
 void exitCmd()
 {
-    for (int i = 0; i < NUM_BLOCKS; i++)
+    for (int index = 0; index < NUM_BLOCKS; index++)
     {
-        if (*(virtualDisk + i))
-            free(*(virtualDisk + i));
+        if (*(virtualDisk + index))
+            free(*(virtualDisk + index));
     }
     free(virtualDisk);
 
