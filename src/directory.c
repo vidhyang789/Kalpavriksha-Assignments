@@ -110,7 +110,7 @@ bool initializeFileNode(char *name, int isDirectory)
     return ans;
 }
 
-void mkdirCmd(char *name)
+void makeDirectory(char *name)
 {
     if (initializeFileNode(name, 1))
     {
@@ -118,7 +118,7 @@ void mkdirCmd(char *name)
     }
 }
 
-void rmdirCmd(char *name)
+void removeDirectory(char *name)
 {
 FileNode *file = cwd->child;
     if (!file)
@@ -174,7 +174,7 @@ FileNode *file = cwd->child;
     }
 }
 
-void lsCmd()
+void showDirectories()
 {
     FileNode *temp = cwd->child;
     if (!temp)
@@ -192,7 +192,7 @@ void lsCmd()
     }
 }
 
-void cdCmd(char *name)
+void changeDirectory(char *name)
 {
     if (strcmp(name, "..") == 0)
     {
@@ -235,7 +235,7 @@ void cdCmd(char *name)
     }
 }
 
-void pwdCmd()
+void showCurrentPath()
 {
     if (!cwd)
     {
@@ -286,7 +286,7 @@ void freeFileTree(FileNode *node)
     }
 }
 
-void exitCmd()
+void exitProgram()
 {
     for (int index = 0; index < NUM_BLOCKS; index++)
     {

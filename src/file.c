@@ -73,7 +73,7 @@ int allocateBlocks(int required, int *outArr)
     return 0;
 }
 
-void createCmd(char *name)
+void createFile(char *name)
 {
     if (initializeFileNode(name, 0))
     {
@@ -81,7 +81,7 @@ void createCmd(char *name)
     }
 }
 
-void writeCmd(char *name, char *data)
+void writeFile(char *name, char *data)
 {
     FileNode *file = cwd->child;
     while (file && strcmp(file->name, name) != 0)
@@ -144,7 +144,7 @@ void writeCmd(char *name, char *data)
     }
 }
 
-void readCmd(char *name)
+void readFile(char *name)
 {
     FileNode *file = cwd->child;
     if (!file)
@@ -190,7 +190,7 @@ void readCmd(char *name)
     }
 }
 
-void deleteCmd(char *name)
+void deleteFile(char *name)
 {
     FileNode *file = cwd->child;
     if (!file)
@@ -250,7 +250,7 @@ void deleteCmd(char *name)
     }
 }
 
-void dfCmd()
+void showDiskDetials()
 {
     int freeCount = 0;
     FreeBlock *file = freeListHead;

@@ -13,15 +13,15 @@
 extern char **virtualDisk;
 extern FreeBlock *freeListHead, *freeListTail;
 
-void createCmd(char *name);
-void writeCmd(char *name, char *data);
-void readCmd(char *name);
-void deleteCmd(char *name);
+void createFile(char *name);
+void writeFile(char *name, char *data);
+void readFile(char *name);
+void deleteFile(char *name);
 
 void initializeVirtualBlock();
 int allocateBlock();
 void freeBlock(int index);
 int allocateBlocks(int required, int *outArr);
-void dfCmd();
+void showDiskDetials();
 
 #endif

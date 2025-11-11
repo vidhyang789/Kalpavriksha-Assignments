@@ -36,13 +36,13 @@ void initializeRootDirectory();
 bool checkIfAlreadyExist(char *name);
 bool initializeFileNode(char *name, int isDirectory);
 
-void mkdirCmd(char *name);
-void rmdirCmd(char *name);
-void lsCmd();
-void cdCmd(char *name);
-void pwdCmd();
+void makeDirectory(char *name);
+void removeDirectory(char *name);
+void showDirectories();
+void changeDirectory(char *name);
+void showCurrentPath();
 
 void freeFileTree(FileNode *node);
-void exitCmd();
+void exitProgram();
 
 #endif

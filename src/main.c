@@ -31,32 +31,32 @@ int main()
 
         case CMD_MKDIR:
             if (arg1)
-                mkdirCmd(arg1);
+                makeDirectory(arg1);
             else
                 printf("Usage: mkdir <dirname>\n");
             break;
 
         case CMD_RMDIR:
             if (arg1)
-                rmdirCmd(arg1);
+                removeDirectory(arg1);
             else
                 printf("Usage: rmdir <dirname>\n");
             break;
 
         case CMD_CD:
             if (arg1)
-                cdCmd(arg1);
+                changeDirectory(arg1);
             else
                 printf("Usage: cd <dirname> or cd ..\n");
             break;
 
         case CMD_PWD:
-            pwdCmd();
+            showCurrentPath();
             break;
 
         case CMD_CREATE:
             if (arg1)
-                createCmd(arg1);
+                createFile(arg1);
             else
                 printf("Usage: create <filename>\n");
             break;
@@ -69,7 +69,7 @@ int main()
                     arg2[strlen(arg2) - 1] = 0;
                     arg2++;
                 }
-                writeCmd(arg1, arg2);
+                writeFile(arg1, arg2);
             }
             else
             {
@@ -79,28 +79,28 @@ int main()
 
         case CMD_READ:
             if (arg1)
-                readCmd(arg1);
+                readFile(arg1);
             else
                 printf("Usage: read <filename>\n");
             break;
 
         case CMD_DELETE:
             if (arg1)
-                deleteCmd(arg1);
+                deleteFile(arg1);
             else
                 printf("Usage: delete <filename>\n");
             break;
 
         case CMD_LS:
-            lsCmd();
+            showDirectories();
             break;
 
         case CMD_DF:
-            dfCmd();
+            showDiskDetials();
             break;
 
         case CMD_EXIT:
-            exitCmd();
+            exitProgram();
             return 0;
 
         default:
