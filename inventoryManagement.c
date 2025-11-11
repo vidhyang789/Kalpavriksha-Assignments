@@ -249,7 +249,7 @@ void deleteProduct(Product **listOfProducts)
 
     for (int index = 0; index < totalProducts; index++)
     {
-        if ((*listOfProducts)[index].id == productId)
+        if (((*listOfProducts)+index)->id == productId)
         {
             found = index;
             break;
@@ -264,7 +264,7 @@ void deleteProduct(Product **listOfProducts)
     {
         for (int index = found; index < totalProducts - 1; index++)
         {
-            (*listOfProducts)[index] = (*listOfProducts)[index + 1];
+            *((*listOfProducts)+index) = *((*listOfProducts)+index+1);
         }
 
         totalProducts--;
