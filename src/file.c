@@ -61,9 +61,9 @@ int allocateBlocks(int required, int *outArr)
         int idx = allocateBlock();
         if (idx == -1)
         {
-            for (int j = 0; j < index; j++)
+            for (int index2 = 0; index2 < index; index2++)
             {
-                freeBlock(*(outArr + j));
+                freeBlock(*(outArr + index2));
             }
             return -1;
         }
@@ -121,10 +121,10 @@ void writeFile(char *name, char *data)
                 int pos = 0;
                 for (int index = 0; index < requiredBlocks; index++)
                 {
-                    int b = *(newBlocks + index);
+                    int idx = *(newBlocks + index);
                     for (int k = 0; k < BLOCK_SIZE && pos < dataLength; k++, pos++)
                     {
-                        *(*(virtualDisk + b) + k) = *(data + pos);
+                        *(*(virtualDisk + idx) + k) = *(data + pos);
                     }
                 }
 
