@@ -1,4 +1,4 @@
-#include "../inc/file.h"
+#include "file.h"
 
 void initializeVirtualBlock()
 {
@@ -31,7 +31,6 @@ int allocateBlock()
         ans = idx;
     }
 
-    
     return ans;
 }
 
@@ -88,7 +87,9 @@ void writeFile(char *name, char *data)
     {
         file = file->next;
         if (file == cwd->child)
+        {
             break;
+        }
     }
     if (!file || strcmp(file->name, name) != 0 || file->isDirectory)
     {
@@ -99,7 +100,9 @@ void writeFile(char *name, char *data)
         int dataLength = strlen(data);
         int requiredBlocks = (dataLength + BLOCK_SIZE - 1) / BLOCK_SIZE;
         if (requiredBlocks == 0)
+        {
             requiredBlocks = 1;
+        }
 
         int *newBlocks = calloc(requiredBlocks, sizeof(int));
         if (!newBlocks)
@@ -157,7 +160,9 @@ void readFile(char *name)
         {
             file = file->next;
             if (file == cwd->child)
+            {
                 break;
+            }
         }
 
         if (!file || strcmp(file->name, name) != 0 || file->isDirectory)
@@ -172,7 +177,6 @@ void readFile(char *name)
             }
             else
             {
-
                 int remaining = file->size;
                 for (int index = 0; index < file->blockCount && remaining > 0; index++)
                 {

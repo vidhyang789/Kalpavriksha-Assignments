@@ -1,4 +1,4 @@
-#include "../inc/commandParser.h"
+#include "commandParser.h"
 
 int main()
 {
@@ -12,17 +12,23 @@ int main()
         showPrompt();
 
         if (!fgets(input, sizeof(input), stdin))
+        {
             break;
+        }
         input[strcspn(input, "\n")] = 0;
         if (strlen(input) == 0)
+        {
             continue;
+        }
 
         char *cmd = strtok(input, " ");
         char *arg1 = strtok(NULL, " ");
         char *arg2 = strtok(NULL, "\0");
 
         if (!cmd)
+        {
             continue;
+        }
 
         cmdType = getCommandType(cmd);
 
@@ -31,23 +37,35 @@ int main()
 
         case CMD_MKDIR:
             if (arg1)
+            {
                 makeDirectory(arg1);
+            }
             else
+            {
                 printf("Usage: mkdir <dirname>\n");
+            }
             break;
 
         case CMD_RMDIR:
             if (arg1)
+            {
                 removeDirectory(arg1);
+            }
             else
+            {
                 printf("Usage: rmdir <dirname>\n");
+            }
             break;
 
         case CMD_CD:
             if (arg1)
+            {
                 changeDirectory(arg1);
+            }
             else
+            {
                 printf("Usage: cd <dirname> or cd ..\n");
+            }
             break;
 
         case CMD_PWD:
@@ -56,9 +74,13 @@ int main()
 
         case CMD_CREATE:
             if (arg1)
+            {
                 createFile(arg1);
+            }
             else
+            {
                 printf("Usage: create <filename>\n");
+            }
             break;
 
         case CMD_WRITE:
@@ -79,16 +101,24 @@ int main()
 
         case CMD_READ:
             if (arg1)
+            {
                 readFile(arg1);
+            }
             else
+            {
                 printf("Usage: read <filename>\n");
+            }
             break;
 
         case CMD_DELETE:
             if (arg1)
+            {
                 deleteFile(arg1);
+            }
             else
+            {
                 printf("Usage: delete <filename>\n");
+            }
             break;
 
         case CMD_LS:

@@ -1,4 +1,4 @@
-#include "../inc/file.h"
+#include "file.h"
 
 void initializeRootDirectory()
 {
@@ -120,7 +120,7 @@ void makeDirectory(char *name)
 
 void removeDirectory(char *name)
 {
-FileNode *file = cwd->child;
+    FileNode *file = cwd->child;
     if (!file)
     {
         printf("No directories here\n");
@@ -200,10 +200,12 @@ void changeDirectory(char *name)
         {
             cwd = cwd->parent;
         }
-        if(cwd->parent == NULL){
+        if (cwd->parent == NULL)
+        {
             printf("Moved to /\n");
         }
-        else{
+        else
+        {
             printf("Moved to /%s\n", cwd->name);
         }
     }
@@ -245,7 +247,6 @@ void showCurrentPath()
     {
         FileNode *temp = cwd;
         char *path = calloc(sizeof(char), 512);
-        char *buffer = calloc(sizeof(char), 64);
 
         while (temp->parent != NULL)
         {
@@ -279,9 +280,13 @@ void freeFileTree(FileNode *node)
         }
 
         if (node->blockPointers)
+        {
             free(node->blockPointers);
+        }
         if (node->name)
+        {
             free(node->name);
+        }
         free(node);
     }
 }
@@ -291,7 +296,9 @@ void exitProgram()
     for (int index = 0; index < NUM_BLOCKS; index++)
     {
         if (*(virtualDisk + index))
+        {
             free(*(virtualDisk + index));
+        }
     }
     free(virtualDisk);
 

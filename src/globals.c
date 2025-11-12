@@ -1,4 +1,4 @@
-#include "../inc/globals.h"
+#include "globals.h"
 #include <stddef.h>  
 
 
