@@ -1,4 +1,5 @@
 #include "file.h"
+#include "commandParser.h"
 
 void initializeRootDirectory()
 {

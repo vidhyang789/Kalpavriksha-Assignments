@@ -1,4 +1,12 @@
 #include "file.h"
+#include "commandParser.h"
+
+char **virtualDisk;
+FreeBlock *freeListHead = NULL;
+FreeBlock *freeListTail = NULL;
+
+FileNode *root = NULL;
+FileNode *cwd = NULL;
 
 void initializeVirtualBlock()
 {
