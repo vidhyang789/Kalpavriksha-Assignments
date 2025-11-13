@@ -1,52 +1,52 @@
 #include "commandParser.h"
 
-CommandType getCommandType(char *input)
+CommandType getCommandType(const char *input)
 {
     if (strncmp(input, "mkdir", 5) == 0)
     {
-        return CMD_MKDIR;
+        return MKDIR;
     }
     if (strncmp(input, "rmdir", 5) == 0)
     {
-        return CMD_RMDIR;
+        return RMDIR;
     }
     if (strncmp(input, "cd", 2) == 0)
     {
-        return CMD_CD;
+        return CD;
     }
     if (strncmp(input, "pwd", 3) == 0)
     {
-        return CMD_PWD;
+        return PWD;
     }
     if (strncmp(input, "create", 6) == 0)
     {
-        return CMD_CREATE;
+        return CREATE;
     }
     if (strncmp(input, "write", 5) == 0)
     {
-        return CMD_WRITE;
+        return WRITE;
     }
     if (strncmp(input, "read", 4) == 0)
     {
-        return CMD_READ;
+        return READ;
     }
     if (strncmp(input, "delete", 6) == 0)
     {
-        return CMD_DELETE;
+        return DELETE;
     }
     if (strncmp(input, "ls", 2) == 0)
     {
-        return CMD_LS;
+        return LS;
     }
     if (strncmp(input, "df", 2) == 0)
     {
-        return CMD_DF;
+        return DF;
     }
     if (strncmp(input, "exit", 4) == 0)
     {
-        return CMD_EXIT;
+        return EXIT;
     }
-    return CMD_INVALID;
+    return INVALID;
 }
 
 void showPrompt()

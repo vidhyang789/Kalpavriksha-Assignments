@@ -33,13 +33,13 @@ extern FileNode *root, *cwd;
 
 void initializeDisk();
 void initializeRootDirectory();
-bool checkIfAlreadyExist(char *name);
-bool initializeFileNode(char *name, int isDirectory);
+bool doesDirectoryExist(const char *name);
+bool initializeFileNode(const char *name, const int isDirectory);
 
-void makeDirectory(char *name);
-void removeDirectory(char *name);
+void makeDirectory(const char *name);
+void removeDirectory(const char *name);
 void showDirectories();
-void changeDirectory(char *name);
+void changeDirectory(const char *name);
 void showCurrentPath();
 
 void freeFileTree(FileNode *node);

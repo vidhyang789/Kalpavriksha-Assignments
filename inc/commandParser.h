@@ -12,19 +12,19 @@ extern FileNode *cwd;
 
 typedef enum CommandType
 {
-    CMD_MKDIR,
-    CMD_RMDIR,
-    CMD_CD,
-    CMD_PWD,
-    CMD_CREATE,
-    CMD_WRITE,
-    CMD_READ,
-    CMD_DELETE,
-    CMD_LS,
-    CMD_DF,
-    CMD_EXIT,
-    CMD_INVALID
+    MKDIR,
+    RMDIR,
+    CD,
+    PWD,
+    CREATE,
+    WRITE,
+    READ,
+    DELETE,
+    LS,
+    DF,
+    EXIT,
+    INVALID
 } CommandType;
 
-CommandType getCommandType(char *input);
+CommandType getCommandType(const char *input);
 void showPrompt();

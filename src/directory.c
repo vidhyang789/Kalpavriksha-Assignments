@@ -56,7 +56,7 @@ void initializeDisk()
     printf("Compact VFS - ready. Type 'exit' to quit.\n");
 }
 
-bool checkIfAlreadyExist(char *name)
+bool doesDirectoryExist(const char *name)
 {
     FileNode *temp = cwd->child;
     bool isSame = false;
@@ -76,10 +76,10 @@ bool checkIfAlreadyExist(char *name)
     return isSame;
 }
 
-bool initializeFileNode(char *name, int isDirectory)
+bool initializeFileNode(const char *name, const int isDirectory)
 {
     bool ans = false;
-    if (!checkIfAlreadyExist(name))
+    if (!doesDirectoryExist(name))
     {
         FileNode *newDir = malloc(sizeof(FileNode));
         newDir->name = malloc(50 * sizeof(char));
@@ -111,7 +111,7 @@ bool initializeFileNode(char *name, int isDirectory)
     return ans;
 }
 
-void makeDirectory(char *name)
+void makeDirectory(const char *name)
 {
     if (initializeFileNode(name, 1))
     {
@@ -119,7 +119,7 @@ void makeDirectory(char *name)
     }
 }
 
-void removeDirectory(char *name)
+void removeDirectory(const char *name)
 {
     FileNode *file = cwd->child;
     if (!file)
@@ -193,7 +193,7 @@ void showDirectories()
     }
 }
 
-void changeDirectory(char *name)
+void changeDirectory(const char *name)
 {
     if (strcmp(name, "..") == 0)
     {

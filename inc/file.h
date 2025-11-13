@@ -13,15 +13,15 @@
 extern char **virtualDisk;
 extern FreeBlock *freeListHead, *freeListTail;
 
-void createFile(char *name);
-void writeFile(char *name, char *data);
-void readFile(char *name);
-void deleteFile(char *name);
+void createFile(const char *name);
+void writeFile(const char *name,const char *data);
+void readFile(const char *name);
+void deleteFile(const char *name);
 
 void initializeVirtualBlock();
 int allocateBlock();
-void freeBlock(int index);
-int allocateBlocks(int required, int *outArr);
+void freeBlock(const int index);
+int allocateBlocks(const int required, int *outArr);
 void showDiskDetials();
 
 #endif

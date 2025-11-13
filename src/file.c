@@ -42,7 +42,7 @@ int allocateBlock()
     return ans;
 }
 
-void freeBlock(int index)
+void freeBlock(const int index)
 {
     FreeBlock *newBlock = malloc(sizeof(FreeBlock));
     newBlock->index = index;
@@ -61,7 +61,7 @@ void freeBlock(int index)
     freeListTail = newBlock;
 }
 
-int allocateBlocks(int required, int *outArr)
+int allocateBlocks(const int required, int *outArr)
 {
     int ans = 0;
     for (int index = 0; index < required; index++)
@@ -80,7 +80,7 @@ int allocateBlocks(int required, int *outArr)
     return 0;
 }
 
-void createFile(char *name)
+void createFile(const char *name)
 {
     if (initializeFileNode(name, 0))
     {
@@ -88,7 +88,7 @@ void createFile(char *name)
     }
 }
 
-void writeFile(char *name, char *data)
+void writeFile(const char *name, const char *data)
 {
     FileNode *file = cwd->child;
     while (file && strcmp(file->name, name) != 0)
@@ -155,7 +155,7 @@ void writeFile(char *name, char *data)
     }
 }
 
-void readFile(char *name)
+void readFile(const char *name)
 {
     FileNode *file = cwd->child;
     if (!file)
@@ -202,7 +202,7 @@ void readFile(char *name)
     }
 }
 
-void deleteFile(char *name)
+void deleteFile(const char *name)
 {
     FileNode *file = cwd->child;
     if (!file)

@@ -35,7 +35,7 @@ int main()
         switch (cmdType)
         {
 
-        case CMD_MKDIR:
+        case MKDIR:
             if (arg1)
             {
                 makeDirectory(arg1);
@@ -46,7 +46,7 @@ int main()
             }
             break;
 
-        case CMD_RMDIR:
+        case RMDIR:
             if (arg1)
             {
                 removeDirectory(arg1);
@@ -57,7 +57,7 @@ int main()
             }
             break;
 
-        case CMD_CD:
+        case CD:
             if (arg1)
             {
                 changeDirectory(arg1);
@@ -68,11 +68,11 @@ int main()
             }
             break;
 
-        case CMD_PWD:
+        case PWD:
             showCurrentPath();
             break;
 
-        case CMD_CREATE:
+        case CREATE:
             if (arg1)
             {
                 createFile(arg1);
@@ -83,7 +83,7 @@ int main()
             }
             break;
 
-        case CMD_WRITE:
+        case WRITE:
             if (arg1 && arg2)
             {
                 if (arg2[0] == '\"' && arg2[strlen(arg2) - 1] == '\"')
@@ -99,7 +99,7 @@ int main()
             }
             break;
 
-        case CMD_READ:
+        case READ:
             if (arg1)
             {
                 readFile(arg1);
@@ -110,7 +110,7 @@ int main()
             }
             break;
 
-        case CMD_DELETE:
+        case DELETE:
             if (arg1)
             {
                 deleteFile(arg1);
@@ -121,15 +121,15 @@ int main()
             }
             break;
 
-        case CMD_LS:
+        case LS:
             showDirectories();
             break;
 
-        case CMD_DF:
+        case DF:
             showDiskDetials();
             break;
 
-        case CMD_EXIT:
+        case EXIT:
             exitProgram();
             return 0;
 
