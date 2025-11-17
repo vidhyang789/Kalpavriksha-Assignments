@@ -9,7 +9,7 @@ typedef struct PlayerNode{
     Player data;
     struct PlayerNode* next;
     float performanceIndex;
-}PlayerNode;
+} PlayerNode;
 
 typedef struct{
     int id;
@@ -22,7 +22,7 @@ typedef struct{
     int batsmanCount, bowlerCount, allrounderCount;
     int playerCount;
     int avgBattingSr;
-}Team;
+} Team;
 
 extern Team *team;
 extern Team **teamIndex; 

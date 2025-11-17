@@ -41,17 +41,17 @@ void pushHead(MaxHeap *currHeap, HeapItem item)
 {
     if (currHeap->size < currHeap->cap)
     {
-        int i = currHeap->size++;
-        currHeap->data[i] = item;
-        while (i > 0)
+        int index = currHeap->size++;
+        currHeap->data[index] = item;
+        while (index > 0)
         {
-            int parent = (i - 1) / 2;
-            if (currHeap->data[parent].node->performanceIndex >= currHeap->data[i].node->performanceIndex)
+            int parent = (index - 1) / 2;
+            if (currHeap->data[parent].node->performanceIndex >= currHeap->data[index].node->performanceIndex)
             {
                 break;
             }
-            swapHeap(&currHeap->data[parent], &currHeap->data[i]);
-            i = parent;
+            swapHeap(&currHeap->data[parent], &currHeap->data[index]);
+            index = parent;
         }
     }
 }
@@ -61,10 +61,10 @@ HeapItem popHead(MaxHeap *currHeap)
     HeapItem res = currHeap->data[0];
     currHeap->size--;
     currHeap->data[0] = currHeap->data[currHeap->size];
-    int i = 0;
+    int index = 0;
     while (1)
     {
-        int l = 2 * i + 1, r = 2 * i + 2, largest = i;
+        int l = 2 * index + 1, r = 2 * index + 2, largest = index;
         if (l < currHeap->size && currHeap->data[l].node->performanceIndex > currHeap->data[largest].node->performanceIndex)
         {
             largest = l;
@@ -73,12 +73,12 @@ HeapItem popHead(MaxHeap *currHeap)
         {
             largest = r;
         }
-        if (largest == i)
+        if (largest == index)
         {
             break;
         }
-        swapHeap(&currHeap->data[i], &currHeap->data[largest]);
-        i = largest;
+        swapHeap(&currHeap->data[index], &currHeap->data[largest]);
+        index = largest;
     }
     return res;
 }

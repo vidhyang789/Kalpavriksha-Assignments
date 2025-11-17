@@ -7,22 +7,22 @@
 Team *team = NULL;
 Team **teamIndex = NULL;
 
-float computePerformanceIndex(const Player *p)
+float computePerformanceIndex(const Player *curPlayer)
 {
     float ans = 0.0f;
-    if (p)
+    if (curPlayer)
     {
-        if (strcmp(p->role, "Batsman") == 0)
+        if (strcmp(curPlayer->role, "Batsman") == 0)
         {
-            ans = (p->battingAverage * p->strikeRate) / 100.0f;
+            ans = (curPlayer->battingAverage * curPlayer->strikeRate) / 100.0f;
         }
-        else if (strcmp(p->role, "Bowler") == 0)
+        else if (strcmp(curPlayer->role, "Bowler") == 0)
         {
-            ans = (p->wickets * 2.0f) + (100.0f - p->economyRate);
+            ans = (curPlayer->wickets * 2.0f) + (100.0f - curPlayer->economyRate);
         }
-        else if (strcmp(p->role, "All-rounder") == 0)
+        else if (strcmp(curPlayer->role, "All-rounder") == 0)
         {
-            ans = ((p->battingAverage * p->strikeRate) / 100.0f) + (p->wickets * 2.0f);
+            ans = ((curPlayer->battingAverage * curPlayer->strikeRate) / 100.0f) + (curPlayer->wickets * 2.0f);
         }
     }
 
@@ -52,18 +52,18 @@ void insertSortedDesc(PlayerNode **headPtr, PlayerNode *node)
     }
 }
 
-PlayerNode *createNodeFromPlayers(const Player *p)
+PlayerNode *createNodeFromPlayers(const Player *curPlayer)
 {
-    PlayerNode *n = (PlayerNode *)malloc(sizeof(PlayerNode));
+    PlayerNode *node = (PlayerNode *)malloc(sizeof(PlayerNode));
 
-    if (n)
+    if (node)
     {
-        n->data = *p;
-        n->performanceIndex = computePerformanceIndex(p);
-        n->next = NULL;
+        node->data = *curPlayer;
+        node->performanceIndex = computePerformanceIndex(curPlayer);
+        node->next = NULL;
     }
 
-    return (n ? n : NULL);
+    return (node ? node : NULL);
 }
 
 int buildTeamIndex()
@@ -74,9 +74,9 @@ int buildTeamIndex()
         teamIndex = (Team **)malloc(sizeof(Team *) * teamCount);
         if (teamIndex)
         {
-            for (int i = 0; i < teamCount; ++i)
+            for (int index = 0; index < teamCount; ++index)
             {
-                teamIndex[i] = &team[i];
+                teamIndex[index] = &team[index];
             }
 
             int cmp(const void *a, const void *b)
@@ -134,20 +134,20 @@ void initializeTeams()
     {
         teamCount = MAX_TEAMS;
 
-        for (int i = 0; i < MAX_TEAMS; i++)
+        for (int index = 0; index < MAX_TEAMS; index++)
         {
-            team[i].id = i + 1;
-            team[i].name = malloc(sizeof(char) * 50);
-            strcpy(team[i].name, teams[i]);
-            team[i].head = NULL;
-            team[i].batsmanHead = NULL;
-            team[i].bowlerHead = NULL;
-            team[i].allRounderHead = NULL;
-            team[i].playerCount = 0;
-            team[i].batsmanCount = 0;
-            team[i].bowlerCount = 0;
-            team[i].allrounderCount = 0;
-            team[i].avgBattingSr = 0.0f;
+            team[index].id = index + 1;
+            team[index].name = malloc(sizeof(char) * 50);
+            strcpy(team[index].name, teams[index]);
+            team[index].head = NULL;
+            team[index].batsmanHead = NULL;
+            team[index].bowlerHead = NULL;
+            team[index].allRounderHead = NULL;
+            team[index].playerCount = 0;
+            team[index].batsmanCount = 0;
+            team[index].bowlerCount = 0;
+            team[index].allrounderCount = 0;
+            team[index].avgBattingSr = 0.0f;
         }
 
         if (buildTeamIndex() != 0)
@@ -156,9 +156,9 @@ void initializeTeams()
             exit(0);
         }
 
-        for (int i = 0; i < playerCount; ++i)
+        for (int index = 0; index < playerCount; ++index)
         {
-            const Player *src = &players[i];
+            const Player *src = &players[index];
             PlayerNode *node = createNodeFromPlayers(src);
             if (node)
             {
@@ -198,25 +198,25 @@ void initializeTeams()
     }
 }
 
-int addPlayerToTeamById(int id, const Player *p)
+int addPlayerToTeamById(int id, const Player *curPlayer)
 {
     int ans = -1;
-    if (team && id >= 1 && id <= teamCount && p)
+    if (team && id >= 1 && id <= teamCount && curPlayer)
     {
         Team *currTeam = &team[id - 1];
-        PlayerNode *node = createNodeFromPlayers(p);
+        PlayerNode *node = createNodeFromPlayers(curPlayer);
         if (node)
         {
             node->next = currTeam->head;
             currTeam->head = node;
 
-            if (strcmp(p->role, "Batsman") == 0)
+            if (strcmp(curPlayer->role, "Batsman") == 0)
             {
                 insertSortedDesc(&currTeam->batsmanHead, node);
                 currTeam->batsmanCount++;
-                currTeam->avgBattingSr += p->strikeRate;
+                currTeam->avgBattingSr += curPlayer->strikeRate;
             }
-            else if (strcmp(p->role, "Bowler") == 0)
+            else if (strcmp(curPlayer->role, "Bowler") == 0)
             {
                 insertSortedDesc(&currTeam->bowlerHead, node);
                 currTeam->bowlerCount++;
@@ -225,7 +225,7 @@ int addPlayerToTeamById(int id, const Player *p)
             {
                 insertSortedDesc(&currTeam->allRounderHead, node);
                 currTeam->allrounderCount++;
-                currTeam->avgBattingSr += p->strikeRate;
+                currTeam->avgBattingSr += curPlayer->strikeRate;
             }
             currTeam->playerCount++;
             ans = 0;
@@ -237,28 +237,28 @@ int addPlayerToTeamById(int id, const Player *p)
 
 Player *inputPlayerDetails()
 {
-    Player *p = malloc(sizeof(Player));
+    Player *curPlayer = malloc(sizeof(Player));
 
     printf("Player ID : ");
-    scanf("%d", &p->id);
+    scanf("%d", &curPlayer->id);
     printf("Name: ");
-    p->name = malloc(sizeof(char) * 64);
-    scanf("%s", p->name);
+    curPlayer->name = malloc(sizeof(char) * 64);
+    scanf("%s", curPlayer->name);
     printf("Role (Batsman/Bowler/All-rounder): ");
-    p->role = malloc(sizeof(char) * 32);
-    scanf("%s", p->role);
+    curPlayer->role = malloc(sizeof(char) * 32);
+    scanf("%s", curPlayer->role);
     printf("TotalRuns: ");
-    scanf("%d", &p->totalRuns);
+    scanf("%d", &curPlayer->totalRuns);
     printf("BattingAverage: ");
-    scanf("%f", &p->battingAverage);
+    scanf("%f", &curPlayer->battingAverage);
     printf("StrikeRate: ");
-    scanf("%f", &p->strikeRate);
+    scanf("%f", &curPlayer->strikeRate);
     printf("Wickets: ");
-    scanf("%d", &p->wickets);
+    scanf("%d", &curPlayer->wickets);
     printf("EconomyRate: ");
-    scanf("%f", &p->economyRate);
+    scanf("%f", &curPlayer->economyRate);
 
-    return p;
+    return curPlayer;
 }
 
 void displayTeamPlayersById(int teamId)
@@ -330,9 +330,9 @@ void displayTeamsSortedByAvgStrikeRate()
         Team **arr = (Team **)malloc(sizeof(Team *) * teamCount);
         if (arr)
         {
-            for (int i = 0; i < teamCount; ++i)
+            for (int index = 0; index < teamCount; ++index)
             {
-                arr[i] = &team[i];
+                arr[index] = &team[index];
             }
 
             int cmp(const void *a, const void *b)
@@ -357,12 +357,12 @@ void displayTeamsSortedByAvgStrikeRate()
             printf("================================================\n");
             printf("Rank | Team                 | AvgSR   | #Players\n");
             printf("-----+----------------------+---------+---------\n");
-            for (int i = 0; i < teamCount; ++i)
+            for (int index = 0; index < teamCount; ++index)
             {
-                Team *currTeam = arr[i];
+                Team *currTeam = arr[index];
                 int c = currTeam->batsmanCount + currTeam->allrounderCount;
                 float av = (c > 0) ? (currTeam->avgBattingSr / c) : 0.0f;
-                printf("%4d  %-20s  %7.2f   %6d\n", i + 1, currTeam->name, av, currTeam->playerCount);
+                printf("%4d  %-20s  %7.2f   %6d\n", index + 1, currTeam->name, av, currTeam->playerCount);
             }
 
             free(arr);
@@ -434,27 +434,27 @@ void displayAllPlayersByRole(const char *role)
         MaxHeap *heap = createHeap(teamCount);
         if (heap)
         {
-            for (int i = 0; i < teamCount; i++)
+            for (int index = 0; index < teamCount; index++)
             {
                 PlayerNode *start = NULL;
                 if (strcmp(role, "Batsman") == 0)
                 {
-                    start = team[i].batsmanHead;
+                    start = team[index].batsmanHead;
                 }
                 else if (strcmp(role, "Bowler") == 0)
                 {
-                    start = team[i].bowlerHead;
+                    start = team[index].bowlerHead;
                 }
                 else
                 {
-                    start = team[i].allRounderHead;
+                    start = team[index].allRounderHead;
                 }
 
                 if (start)
                 {
                     HeapItem node;
                     node.node = start;
-                    node.teamIndex = i;
+                    node.teamIndex = index;
                     pushHead(heap, node);
                 }
             }
