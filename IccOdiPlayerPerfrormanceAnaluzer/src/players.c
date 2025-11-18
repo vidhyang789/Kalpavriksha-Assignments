@@ -1,39 +1,39 @@
-#include "players.h"
-#include "heap.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include "players.h"
+#include "heap.h"
 
 Team *team = NULL;
 Team **teamIndex = NULL;
 
 float computePerformanceIndex(const Player *curPlayer)
 {
-    float ans = 0.0f;
+    float performance = 0.0f;
     if (curPlayer)
     {
         if (strcmp(curPlayer->role, "Batsman") == 0)
         {
-            ans = (curPlayer->battingAverage * curPlayer->strikeRate) / 100.0f;
+            performance = (curPlayer->battingAverage * curPlayer->strikeRate) / 100.0f;
         }
         else if (strcmp(curPlayer->role, "Bowler") == 0)
         {
-            ans = (curPlayer->wickets * 2.0f) + (100.0f - curPlayer->economyRate);
+            performance = (curPlayer->wickets * 2.0f) + (100.0f - curPlayer->economyRate);
         }
         else if (strcmp(curPlayer->role, "All-rounder") == 0)
         {
-            ans = ((curPlayer->battingAverage * curPlayer->strikeRate) / 100.0f) + (curPlayer->wickets * 2.0f);
+            performance = ((curPlayer->battingAverage * curPlayer->strikeRate) / 100.0f) + (curPlayer->wickets * 2.0f);
         }
     }
 
-    return ans;
+    return performance;
 }
 
-void insertSortedDesc(PlayerNode **headPtr, PlayerNode *node)
+void insertSortedDesc(PlayerRecord **headPtr, PlayerRecord *node)
 {
     if (headPtr && node)
     {
-        PlayerNode *head = *headPtr;
+        PlayerRecord *head = *headPtr;
         if (!head || node->performanceIndex >= head->performanceIndex)
         {
             node->next = head;
@@ -41,7 +41,7 @@ void insertSortedDesc(PlayerNode **headPtr, PlayerNode *node)
         }
         else
         {
-            PlayerNode *cur = head;
+            PlayerRecord *cur = head;
             while (cur->next && cur->next->performanceIndex > node->performanceIndex)
             {
                 cur = cur->next;
@@ -52,9 +52,10 @@ void insertSortedDesc(PlayerNode **headPtr, PlayerNode *node)
     }
 }
 
-PlayerNode *createNodeFromPlayers(const Player *curPlayer)
+PlayerRecord *createNodeFromPlayers(const Player *curPlayer)
 {
-    PlayerNode *node = (PlayerNode *)malloc(sizeof(PlayerNode));
+    PlayerRecord *node = NULL;
+    node = (PlayerRecord *)malloc(sizeof(PlayerRecord));
 
     if (node)
     {
@@ -63,12 +64,12 @@ PlayerNode *createNodeFromPlayers(const Player *curPlayer)
         node->next = NULL;
     }
 
-    return (node ? node : NULL);
+    return node;
 }
 
 int buildTeamIndex()
 {
-    int ans = -1;
+    int result = -1;
     if (team)
     {
         teamIndex = (Team **)malloc(sizeof(Team *) * teamCount);
@@ -87,10 +88,10 @@ int buildTeamIndex()
             }
 
             qsort(teamIndex, teamCount, sizeof(Team *), cmp);
-            ans = 0;
+            result = 0;
         }
     }
-    return ans;
+    return result;
 }
 
 int findTeamIndexByName(const char *name)
@@ -159,7 +160,7 @@ void initializeTeams()
         for (int index = 0; index < playerCount; ++index)
         {
             const Player *src = &players[index];
-            PlayerNode *node = createNodeFromPlayers(src);
+            PlayerRecord *node = createNodeFromPlayers(src);
             if (node)
             {
                 int teamindex = findTeamIndexByName(src->team);
@@ -198,13 +199,13 @@ void initializeTeams()
     }
 }
 
-int addPlayerToTeamById(int id, const Player *curPlayer)
+int addPlayerToTeamById(const int id, const Player *curPlayer)
 {
     int ans = -1;
     if (team && id >= 1 && id <= teamCount && curPlayer)
     {
         Team *currTeam = &team[id - 1];
-        PlayerNode *node = createNodeFromPlayers(curPlayer);
+        PlayerRecord *node = createNodeFromPlayers(curPlayer);
         if (node)
         {
             node->next = currTeam->head;
@@ -261,7 +262,7 @@ Player *inputPlayerDetails()
     return curPlayer;
 }
 
-void displayTeamPlayersById(int teamId)
+void displayTeamPlayersById(const int teamId)
 {
     if (!team || teamId < 1 || teamId > teamCount)
     {
@@ -286,7 +287,7 @@ void displayTeamPlayersById(int teamId)
         }
 
         printf("\n-- Batsmen (top to bottom) --\n");
-        PlayerNode *cur = currTeam->batsmanHead;
+        PlayerRecord *cur = currTeam->batsmanHead;
         printf("==================================================================\n");
         printf("ID   Name                          PerfIdx           SR    Runs    \n");
         printf("----+----------------------------+-----------------+-----+--------\n");
@@ -370,7 +371,7 @@ void displayTeamsSortedByAvgStrikeRate()
     }
 }
 
-void displayTopKofTeamByRole(const char *name, const char *role, int K)
+void displayTopKofTeamByRole(const char *name, const char *role,const int K)
 {
     if (!team || !name || !role || K <= 0)
     {
@@ -387,7 +388,7 @@ void displayTopKofTeamByRole(const char *name, const char *role, int K)
         else
         {
             Team *currTeam = &team[idx];
-            PlayerNode *cur = NULL;
+            PlayerRecord *cur = NULL;
 
             if (strcmp(role, "Batsman") == 0)
             {
@@ -431,12 +432,12 @@ void displayAllPlayersByRole(const char *role)
 {
     if (role && team)
     {
-        MaxHeap *heap = createHeap(teamCount);
+        PlayerMaxHeap *heap = createHeap(teamCount);
         if (heap)
         {
             for (int index = 0; index < teamCount; index++)
             {
-                PlayerNode *start = NULL;
+                PlayerRecord *start = NULL;
                 if (strcmp(role, "Batsman") == 0)
                 {
                     start = team[index].batsmanHead;
@@ -474,13 +475,13 @@ void displayAllPlayersByRole(const char *role)
                 while (heap->size > 0)
                 {
                     HeapItem top = popHead(heap);
-                    PlayerNode *node = top.node;
+                    PlayerRecord *node = top.node;
                     int teamindex = top.teamIndex;
                     printf("%-4d | %-25s | %-15s | %-10s | %-5.2f | %-5d | %-5d | %-5.1f | %-5.1f\n",
                            node->data.id, node->data.name, team[teamindex].name, node->data.role,
                            node->performanceIndex, node->data.totalRuns, node->data.wickets, node->data.strikeRate, node->data.economyRate);
 
-                    PlayerNode *next = NULL;
+                    PlayerRecord *next = NULL;
                     next = node->next;
 
                     if (next)

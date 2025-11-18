@@ -3,18 +3,28 @@
 #include <string.h>
 #include "players.h"
 
-void readLine(char *buf, int size)
+typedef enum CommandType
 {
-    if (!fgets(buf, size, stdin))
+    AddPlayerToTeam = 1,
+    DisplayPlayersOfASpecificTeam,
+    DisplayByAverageBattingStrike,
+    DisplayTopKPlayersOfTeam,
+    DisplayAllPlayersOfSpecificRole,
+    Exit
+} CommandType;
+
+void readLine(char *buffer, const int size)
+{
+    if (!fgets(buffer, size, stdin))
     {
-        buf[0] = '\0';
+        buffer[0] = '\0';
     }
     else
     {
-        int length = strlen(buf);
-        if (length && buf[length - 1] == '\n')
+        int length = strlen(buffer);
+        if (length && buffer[length - 1] == '\n')
         {
-            buf[length - 1] = '\0';
+            buffer[length - 1] = '\0';
         }
     }
 }
@@ -33,7 +43,8 @@ int main(void)
     printf("5. Display all Players of specific role Across All Teams by performance index\n");
     printf("6. Exit\n");
 
-    while (1)
+    int running = 1;
+    while (running)
     {
         printf("\nEnter choice: ");
         int ch = 0;
@@ -41,15 +52,15 @@ int main(void)
 
         switch (ch)
         {
-        case 1:
+        case AddPlayerToTeam:
             printf("Enter Team ID to add player: ");
-            int tid;
-            scanf("%d", &tid);
+            int teamId;
+            scanf("%d", &teamId);
             printf("Enter Player details : \n");
-            Player *p = inputPlayerDetails();
-            if (addPlayerToTeamById(tid, p) == 0)
+            Player *player = inputPlayerDetails();
+            if (addPlayerToTeamById(teamId, player) == 0)
             {
-                printf("\nPlayer added successfully to team %s\n", teams[tid]);
+                printf("\nPlayer added successfully to team %s\n", teams[teamId]);
             }
             else
             {
@@ -57,18 +68,18 @@ int main(void)
             }
             break;
 
-        case 2:
+        case DisplayPlayersOfASpecificTeam:
             int id;
             printf("Enter Team ID to add player ");
             scanf("%d", &id);
             displayTeamPlayersById(id);
             break;
 
-        case 3:
+        case DisplayByAverageBattingStrike:
             displayTeamsSortedByAvgStrikeRate();
             break;
 
-        case 4:
+        case DisplayTopKPlayersOfTeam:
             char *tname = malloc(sizeof(char) * 30), *role = malloc(sizeof(char) * 30);
             int K;
             printf("Enter Team name: ");
@@ -80,15 +91,16 @@ int main(void)
             displayTopKofTeamByRole(tname, role, K);
             break;
 
-        case 5:
+        case DisplayAllPlayersOfSpecificRole:
             char *r = malloc(sizeof(char) * 30);
             printf("Enter Role (1.Batsman/2.Bowler/3.All-rounder): ");
             scanf("%s", r);
             displayAllPlayersByRole(r);
             break;
 
-        case 6:
-            exit(0);
+        case Exit:
+            running = 0;
+            break;
 
         default:
             printf("Invalid choice\n");

@@ -2,24 +2,21 @@
 #define HEAP_H
 #include "players.h"
 
-
 typedef struct {
-    PlayerNode *node;
+    PlayerRecord *node;
     int teamIndex;
 } HeapItem;
 
 typedef struct {
     HeapItem *data;
     int size;
-    int cap;
-} MaxHeap;
+    int capacity;
+} PlayerMaxHeap;
 
-
-MaxHeap *createHeap(int capacity);
-void freeHeap(MaxHeap *currHeap);
+PlayerMaxHeap *createHeap(int capacity);
+void freeHeap(PlayerMaxHeap *currHeap);
 void swapHeap(HeapItem *heap1, HeapItem *heap2);
-void pushHead(MaxHeap *currHeap, HeapItem item);
-HeapItem popHead(MaxHeap *currHeap);
-
+void pushHead(PlayerMaxHeap *currHeap, HeapItem item);
+HeapItem popHead(PlayerMaxHeap *currHeap);
 
 #endif

@@ -1,27 +1,28 @@
-#include "heap.h"
 #include <stdio.h>
 #include <stdlib.h>
+#include "heap.h"
 
-MaxHeap *createHeap(int capacity)
+PlayerMaxHeap *createHeap(const int capacity)
 {
-    MaxHeap *currheap = (MaxHeap *)malloc(sizeof(MaxHeap));
+    PlayerMaxHeap *currheap = (PlayerMaxHeap *)malloc(sizeof(PlayerMaxHeap));
     if (currheap)
     {
         currheap->data = (HeapItem *)malloc(sizeof(HeapItem) * capacity);
         if (!currheap->data)
         {
             free(currheap);
+            currheap = NULL;
         }
         else
         {
             currheap->size = 0;
-            currheap->cap = capacity;
+            currheap->capacity = capacity;
         }
     }
-    return (currheap ? currheap : NULL);
+    return currheap;
 }
 
-void freeHeap(MaxHeap *currHeap)
+void freeHeap(PlayerMaxHeap *currHeap)
 {
     if (currHeap)
     {
@@ -37,9 +38,9 @@ void swapHeap(HeapItem *heap1, HeapItem *heap2)
     *heap2 = tmp;
 }
 
-void pushHead(MaxHeap *currHeap, HeapItem item)
+void pushHead(PlayerMaxHeap *currHeap, HeapItem item)
 {
-    if (currHeap->size < currHeap->cap)
+    if (currHeap->size < currHeap->capacity)
     {
         int index = currHeap->size++;
         currHeap->data[index] = item;
@@ -56,22 +57,22 @@ void pushHead(MaxHeap *currHeap, HeapItem item)
     }
 }
 
-HeapItem popHead(MaxHeap *currHeap)
+HeapItem popHead(PlayerMaxHeap *currHeap)
 {
-    HeapItem res = currHeap->data[0];
+    HeapItem result = currHeap->data[0];
     currHeap->size--;
     currHeap->data[0] = currHeap->data[currHeap->size];
     int index = 0;
     while (1)
     {
-        int l = 2 * index + 1, r = 2 * index + 2, largest = index;
-        if (l < currHeap->size && currHeap->data[l].node->performanceIndex > currHeap->data[largest].node->performanceIndex)
+        int leftchild = 2 * index + 1, rightchild = 2 * index + 2, largest = index;
+        if (leftchild < currHeap->size && currHeap->data[leftchild].node->performanceIndex > currHeap->data[largest].node->performanceIndex)
         {
-            largest = l;
+            largest = leftchild;
         }
-        if (r < currHeap->size && currHeap->data[r].node->performanceIndex > currHeap->data[largest].node->performanceIndex)
+        if (rightchild < currHeap->size && currHeap->data[rightchild].node->performanceIndex > currHeap->data[largest].node->performanceIndex)
         {
-            largest = r;
+            largest = rightchild;
         }
         if (largest == index)
         {
@@ -80,5 +81,5 @@ HeapItem popHead(MaxHeap *currHeap)
         swapHeap(&currHeap->data[index], &currHeap->data[largest]);
         index = largest;
     }
-    return res;
+    return result;
 }

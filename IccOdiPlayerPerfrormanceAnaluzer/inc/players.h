@@ -5,19 +5,19 @@
 
 #define MAX_TEAMS 10
 
-typedef struct PlayerNode{
+typedef struct PlayerRecord{
     Player data;
-    struct PlayerNode* next;
+    struct PlayerRecord* next;
     float performanceIndex;
-} PlayerNode;
+} PlayerRecord;
 
 typedef struct{
     int id;
     char *name;
-    PlayerNode *head;
-    PlayerNode *batsmanHead;
-    PlayerNode *bowlerHead;
-    PlayerNode *allRounderHead;
+    PlayerRecord *head;
+    PlayerRecord *batsmanHead;
+    PlayerRecord *bowlerHead;
+    PlayerRecord *allRounderHead;
 
     int batsmanCount, bowlerCount, allrounderCount;
     int playerCount;
@@ -27,17 +27,17 @@ typedef struct{
 extern Team *team;
 extern Team **teamIndex; 
 
-PlayerNode *createNodeFromPlayers(const Player *p);
-void insertSortedDesc(PlayerNode **headPtr, PlayerNode *node);
-float computePerformanceIndex(const Player *p);
+PlayerRecord *createNodeFromPlayers(const Player *curPlayer);
+void insertSortedDesc(PlayerRecord **headPtr, PlayerRecord *node);
+float computePerformanceIndex(const Player *curPlayer);
 int buildTeamIndex();
 int findTeamIndexByName(const char *name);
 void initializeTeams();
 Player* inputPlayerDetails();
 void displayTeamsSortedByAvgStrikeRate();
-void displayTeamPlayersById(int teamId);
-int addPlayerToTeamById(int id, const Player *p);
-void displayTopKofTeamByRole(const char *name, const char *role, int K);
+void displayTeamPlayersById(const int teamId);
+int addPlayerToTeamById(const int id, const Player *curPlayer);
+void displayTopKofTeamByRole(const char *name, const char *role,const int K);
 void displayAllPlayersByRole(const char *role);
 void freeAllData();
 
