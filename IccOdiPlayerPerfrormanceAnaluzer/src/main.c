@@ -52,60 +52,61 @@ int main(void)
 
         switch (ch)
         {
-        case AddPlayerToTeam:
-            printf("Enter Team ID to add player: ");
-            int teamId;
-            scanf("%d", &teamId);
-            printf("Enter Player details : \n");
-            Player *player = inputPlayerDetails();
-            if (addPlayerToTeamById(teamId, player) == 0)
-            {
-                printf("\nPlayer added successfully to team %s\n", teams[teamId]);
+            case AddPlayerToTeam:
+                printf("Enter Team ID to add player: ");
+                int teamId;
+                scanf("%d", &teamId);
+                printf("Enter Player details : \n");
+                Player *player = inputPlayerDetails();
+                if (addPlayerToTeamById(teamId, player) == 0)
+                {
+                    printf("\nPlayer added successfully to team %s\n", teams[teamId]);
+                }
+                else
+                {
+                    printf("\nPlayer Not added\n");
+                }
+                break;
+
+            case DisplayPlayersOfASpecificTeam:
+                int id;
+                printf("Enter Team ID to add player ");
+                scanf("%d", &id);
+                displayTeamPlayersById(id);
+                break;
+
+            case DisplayByAverageBattingStrike:
+                displayTeamsSortedByAvgStrikeRate();
+                break;
+
+            case DisplayTopKPlayersOfTeam:
+                char *role = malloc(sizeof(char) * 30);
+                int teamid = 0;
+                int K;
+                printf("Enter Team id: ");
+                scanf("%d", &teamid);
+                printf("Enter Role (Batsman/Bowler/All-rounder): ");
+                scanf("%s", role);
+                printf("Enter K: ");
+                scanf("%d", &K);
+                displayTopKofTeamByRole(teamid, role, K);
+                break;
+
+            case DisplayAllPlayersOfSpecificRole:
+                char *r = malloc(sizeof(char) * 30);
+                printf("Enter Role (Batsman/Bowler/All-rounder): ");
+                scanf("%s", r);
+                displayAllPlayersByRole(r);
+                break;
+
+            case Exit:
+                running = 0;
+                break;
+
+            default:
+                printf("Invalid choice\n");
+                break;
             }
-            else
-            {
-                printf("\nPlayer Not added\n");
-            }
-            break;
-
-        case DisplayPlayersOfASpecificTeam:
-            int id;
-            printf("Enter Team ID to add player ");
-            scanf("%d", &id);
-            displayTeamPlayersById(id);
-            break;
-
-        case DisplayByAverageBattingStrike:
-            displayTeamsSortedByAvgStrikeRate();
-            break;
-
-        case DisplayTopKPlayersOfTeam:
-            char *tname = malloc(sizeof(char) * 30), *role = malloc(sizeof(char) * 30);
-            int K;
-            printf("Enter Team name: ");
-            scanf("%s", tname);
-            printf("Enter Role (Batsman/Bowler/All-rounder): ");
-            scanf("%s", role);
-            printf("Enter K: ");
-            scanf("%d", &K);
-            displayTopKofTeamByRole(tname, role, K);
-            break;
-
-        case DisplayAllPlayersOfSpecificRole:
-            char *r = malloc(sizeof(char) * 30);
-            printf("Enter Role (1.Batsman/2.Bowler/3.All-rounder): ");
-            scanf("%s", r);
-            displayAllPlayersByRole(r);
-            break;
-
-        case Exit:
-            running = 0;
-            break;
-
-        default:
-            printf("Invalid choice\n");
-            break;
-        }
     }
 
     freeAllData();

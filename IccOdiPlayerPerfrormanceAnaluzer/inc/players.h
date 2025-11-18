@@ -37,7 +37,7 @@ Player* inputPlayerDetails();
 void displayTeamsSortedByAvgStrikeRate();
 void displayTeamPlayersById(const int teamId);
 int addPlayerToTeamById(const int id, const Player *curPlayer);
-void displayTopKofTeamByRole(const char *name, const char *role,const int K);
+void displayTopKofTeamByRole(const int index, const char *role,const int K);
 void displayAllPlayersByRole(const char *role);
 void freeAllData();
 

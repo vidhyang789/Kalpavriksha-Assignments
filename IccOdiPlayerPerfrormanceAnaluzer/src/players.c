@@ -80,14 +80,6 @@ int buildTeamIndex()
                 teamIndex[index] = &team[index];
             }
 
-            int cmp(const void *a, const void *b)
-            {
-                Team *A = *(Team **)a;
-                Team *B = *(Team **)b;
-                return strcasecmp(A->name, B->name);
-            }
-
-            qsort(teamIndex, teamCount, sizeof(Team *), cmp);
             result = 0;
         }
     }
@@ -96,32 +88,15 @@ int buildTeamIndex()
 
 int findTeamIndexByName(const char *name)
 {
-    int ans = -1;
-
-    if (teamIndex && name)
-    {
-        int l = 0, r = teamCount - 1;
-        while (l <= r)
-        {
-            int mid = (l + r) / 2;
-            int cmp = strcasecmp(teamIndex[mid]->name, name);
-            if (cmp == 0)
-            {
-                ans = (teamIndex[mid] - team);
-                break;
-            }
-            else if (cmp < 0)
-            {
-                l = mid + 1;
-            }
-            else
-            {
-                r = mid - 1;
-            }
+    int idx = -1;
+    for(int index = 0;index < teamCount;index++){
+        if(strcmp(name,teams[index]) == 0){
+            idx = index;
+            break;
         }
     }
 
-    return ans;
+    return idx;
 }
 
 void initializeTeams()
@@ -371,23 +346,21 @@ void displayTeamsSortedByAvgStrikeRate()
     }
 }
 
-void displayTopKofTeamByRole(const char *name, const char *role,const int K)
+void displayTopKofTeamByRole(const int index, const char *role,const int K)
 {
-    if (!team || !name || !role || K <= 0)
+    if (!team || !role || K <= 0)
     {
         printf("Invalid input\n");
     }
     else
     {
-        int idx = findTeamIndexByName(name);
-
-        if (idx < 0)
+        if (index < 0 || index >= teamCount)
         {
-            printf("Team '%s' not found\n", name);
+            printf("Team '%d' is out of bound\n", index);
         }
         else
         {
-            Team *currTeam = &team[idx];
+            Team* currTeam = teamIndex[index];
             PlayerRecord *cur = NULL;
 
             if (strcmp(role, "Batsman") == 0)
@@ -471,7 +444,7 @@ void displayAllPlayersByRole(const char *role)
                 printf("=======================================================================================================\n");
                 printf("ID   | Name                      | Team            | Role       | PI    | Runs  | Wkts  | SR    | ER\n");
                 printf("-----+---------------------------+-----------------+------------+-------+-------+-------+-------+------\n");
-
+                int count = 0;
                 while (heap->size > 0)
                 {
                     HeapItem top = popHead(heap);
@@ -491,7 +464,9 @@ void displayAllPlayersByRole(const char *role)
                         nextTeamindex.teamIndex = teamindex;
                         pushHead(heap, nextTeamindex);
                     }
+                    count++;
                 }
+                printf("\nTotal %d players are there \n",count);
             }
         }
     }
