@@ -299,6 +299,22 @@ void displayTeamPlayersById(const int teamId)
     }
 }
 
+int compareTeamsByAvgSR(const void *a, const void *b)
+{
+    Team *A = *(Team **)a;
+    Team *B = *(Team **)b;
+
+    int ac = A->batsmanCount + A->allrounderCount;
+    int bc = B->batsmanCount + B->allrounderCount;
+
+    float avA = (ac > 0) ? (A->avgBattingSr / ac) : 0.0f;
+    float avB = (bc > 0) ? (B->avgBattingSr / bc) : 0.0f;
+
+    if (avA < avB) return 1;   // sort descending
+    if (avA > avB) return -1;
+    return 0;
+}
+
 void displayTeamsSortedByAvgStrikeRate()
 {
     if (team)
@@ -311,23 +327,7 @@ void displayTeamsSortedByAvgStrikeRate()
                 arr[index] = &team[index];
             }
 
-            int cmp(const void *a, const void *b)
-            {
-                int ans = 0;
-                Team *A = *(Team **)a;
-                Team *B = *(Team **)b;
-                int ac = A->batsmanCount + A->allrounderCount;
-                int bc = B->batsmanCount + B->allrounderCount;
-                float avA = (ac > 0) ? (A->avgBattingSr / ac) : 0.0f;
-                float avB = (bc > 0) ? (B->avgBattingSr / bc) : 0.0f;
-                if (avA < avB)
-                    ans = 1;
-                if (avA > avB)
-                    ans = -1;
-                return ans;
-            }
-
-            qsort(arr, teamCount, sizeof(Team *), cmp);
+            qsort(arr, teamCount, sizeof(Team *), compareTeamsByAvgSR);
 
             printf("\nTeams sorted by Average Batting Strike Rate (desc):\n");
             printf("================================================\n");

@@ -33,6 +33,7 @@ float computePerformanceIndex(const Player *curPlayer);
 int buildTeamIndex();
 int findTeamIndexByName(const char *name);
 void initializeTeams();
+int compareTeamsByAvgSR(const void *a, const void *b);
 Player* inputPlayerDetails();
 void displayTeamsSortedByAvgStrikeRate();
 void displayTeamPlayersById(const int teamId);
