@@ -81,22 +81,22 @@ int main(void)
 
         case DisplayTopKPlayersOfTeam:
             char *role = malloc(sizeof(char) * 30);
-            int teamid = 0;
+            int teamId = 0;
             int K;
             printf("Enter Team id: ");
-            scanf("%d", &teamid);
+            scanf("%d", &teamId);
             printf("Enter Role (Batsman/Bowler/All-rounder): ");
             scanf("%s", role);
             printf("Enter K: ");
             scanf("%d", &K);
-            displayTopKofTeamByRole(teamid, role, K);
+            displayTopKofTeamByRole(teamId, role, K);
             break;
 
         case DisplayAllPlayersOfSpecificRole:
-            char *currole = malloc(sizeof(char) * 30);
+            char *curRole = malloc(sizeof(char) * 30);
             printf("Enter Role (Batsman/Bowler/All-rounder): ");
-            scanf("%s", currole);
-            displayAllPlayersByRole(currole);
+            scanf("%s", curRole);
+            displayAllPlayersByRole(curRole);
             break;
 
         case Exit:
