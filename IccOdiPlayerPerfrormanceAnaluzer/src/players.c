@@ -89,8 +89,10 @@ int buildTeamIndex()
 int findTeamIndexByName(const char *name)
 {
     int idx = -1;
-    for(int index = 0;index < teamCount;index++){
-        if(strcmp(name,teams[index]) == 0){
+    for (int index = 0; index < teamCount; index++)
+    {
+        if (strcmp(name, teams[index]) == 0)
+        {
             idx = index;
             break;
         }
@@ -299,20 +301,28 @@ void displayTeamPlayersById(const int teamId)
     }
 }
 
-int compareTeamsByAvgSR(const void *a, const void *b)
+int compareTeamsByAvgSR(const void *teama, const void *teamb)
 {
-    Team *A = *(Team **)a;
-    Team *B = *(Team **)b;
+    Team *teamA = *(Team **)teama;
+    Team *teamB = *(Team **)teamb;
 
-    int ac = A->batsmanCount + A->allrounderCount;
-    int bc = B->batsmanCount + B->allrounderCount;
+    int ac = teamA->batsmanCount + teamA->allrounderCount;
+    int bc = teamB->batsmanCount + teamB->allrounderCount;
 
-    float avA = (ac > 0) ? (A->avgBattingSr / ac) : 0.0f;
-    float avB = (bc > 0) ? (B->avgBattingSr / bc) : 0.0f;
+    float avgBattingSrA = (ac > 0) ? (teamA->avgBattingSr / ac) : 0.0f;
+    float avgBattingSrB = (bc > 0) ? (teamB->avgBattingSr / bc) : 0.0f;
 
-    if (avA < avB) return 1;   // sort descending
-    if (avA > avB) return -1;
-    return 0;
+    int ans = 0;
+    if (avgBattingSrA < avgBattingSrB)
+    {
+        ans = 1;
+    }
+    if (avgBattingSrA > avgBattingSrB)
+    {
+        ans = -1;
+    }
+
+    return ans;
 }
 
 void displayTeamsSortedByAvgStrikeRate()
@@ -346,7 +356,7 @@ void displayTeamsSortedByAvgStrikeRate()
     }
 }
 
-void displayTopKofTeamByRole(const int index, const char *role,const int K)
+void displayTopKofTeamByRole(const int index, const char *role, const int K)
 {
     if (!team || !role || K <= 0)
     {
@@ -360,7 +370,7 @@ void displayTopKofTeamByRole(const int index, const char *role,const int K)
         }
         else
         {
-            Team* currTeam = teamIndex[index];
+            Team *currTeam = teamIndex[index];
             PlayerRecord *cur = NULL;
 
             if (strcmp(role, "Batsman") == 0)
@@ -466,7 +476,7 @@ void displayAllPlayersByRole(const char *role)
                     }
                     count++;
                 }
-                printf("\nTotal %d players are there \n",count);
+                printf("\nTotal %d players are there \n", count);
             }
         }
     }

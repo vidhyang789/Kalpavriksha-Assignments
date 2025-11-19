@@ -1,11 +1,12 @@
 #ifndef PLAYERS_DATA_H
 #define PLAYERS_DATA_H
 
-typedef struct {
+typedef struct
+{
     int id;
-    char* name;
-    char* team;
-    char* role;
+    char *name;
+    char *team;
+    char *role;
     int totalRuns;
     float battingAverage;
     float strikeRate;
@@ -213,10 +214,9 @@ static const Player players[] = {
     {903, "Rassie van der Dussen", "South Africa", "Batsman", 2385, 55.0, 89.5, 0, 0.0},
     {619, "Johnson Charles", "West Indies", "Batsman", 1080, 30.2, 90.1, 0, 0.0},
     {620, "Evin Lewis", "West Indies", "Batsman", 1950, 36.4, 89.8, 0, 0.0},
-    {720, "Usman Ghani", "Afghanistan", "Batsman", 1050, 26.9, 77.4, 0, 0.0}
-};
+    {720, "Usman Ghani", "Afghanistan", "Batsman", 1050, 26.9, 77.4, 0, 0.0}};
 
-static const char* teams[] = {
+static const char *teams[] = {
     "Afghanistan",
     "Australia",
     "Bangladesh",
@@ -226,8 +226,7 @@ static const char* teams[] = {
     "Pakistan",
     "South Africa",
     "Sri Lanka",
-    "West Indies"
-};
+    "West Indies"};
 
 static int teamCount = sizeof(teams) / sizeof(teams[0]);
 static int playerCount = sizeof(players) / sizeof(players[0]);

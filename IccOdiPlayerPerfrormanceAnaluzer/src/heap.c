@@ -33,9 +33,9 @@ void freeHeap(PlayerMaxHeap *currHeap)
 
 void swapHeap(HeapItem *heap1, HeapItem *heap2)
 {
-    HeapItem tmp = *heap1;
+    HeapItem temp = *heap1;
     *heap1 = *heap2;
-    *heap2 = tmp;
+    *heap2 = temp;
 }
 
 void pushHead(PlayerMaxHeap *currHeap, HeapItem item)

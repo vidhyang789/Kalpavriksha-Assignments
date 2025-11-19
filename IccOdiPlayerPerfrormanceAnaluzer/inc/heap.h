@@ -2,12 +2,14 @@
 #define HEAP_H
 #include "players.h"
 
-typedef struct {
+typedef struct
+{
     PlayerRecord *node;
     int teamIndex;
 } HeapItem;
 
-typedef struct {
+typedef struct
+{
     HeapItem *data;
     int size;
     int capacity;
